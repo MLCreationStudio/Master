@@ -5,15 +5,8 @@ import './Landing.css';
 
 export default function Landing() {
   const navigate = useNavigate();
-  const [url, setUrl] = useState('');
-
-  const handleStart = () => {
-    if (url.trim()) {
-      navigate('/processando-carga', { state: { url: url.trim() } });
-    } else {
-      navigate('/diagnostico');
-    }
-  };
+export default function Landing() {
+  const navigate = useNavigate();
 
   return (
     <div className="landing-page terminal-bg">
