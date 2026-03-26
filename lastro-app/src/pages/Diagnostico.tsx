@@ -33,9 +33,21 @@ export default function Diagnostico() {
     }
   }, [isProcessing, navigate, urlInput, processingSteps.length]);
 
-  const handleStartAnalysis = (e: React.FormEvent) => {
+  const handleStartAnalysis = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsProcessing(true);
+    
+    // MOCK_MODE: True (Para o MVP atual)
+    // Em produção, isso seria uma chamada para o Supabase Edge Function
+    const USE_MOCK = true;
+
+    try {
+      if (!USE_MOCK) {
+        // const { data, error } = await supabase.functions.invoke('diagnostico-gtm', { body: { url: urlInput } });
+      }
+    } catch (err) {
+      console.error("Erro na extração tática:", err);
+    }
   };
 
   return (

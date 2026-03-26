@@ -1,4 +1,3 @@
-import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function Resultado() {
@@ -71,18 +70,30 @@ export default function Resultado() {
           </div>
         </div>
 
-        <div className="w-full flex justify-center gap-8 mt-12 pb-20">
+        <div className="w-full flex flex-col items-center gap-8 mt-12 pb-20">
+           <div className="flex gap-8">
+              <button 
+                onClick={() => navigate('/tracker', { state: mockData })}
+                className="lastro-btn h-[72px] px-12 !bg-emerald-600 !text-black font-mono font-bold tracking-widest hover:scale-105 transition-all"
+              >
+                 [ACESSAR_SALA_DE_GUERRA]
+              </button>
+              <button 
+                onClick={() => navigate('/briefing', { state: mockData })}
+                className="lastro-btn h-[72px] px-12 !bg-white !text-black font-mono font-bold tracking-widest hover:scale-105 transition-all"
+              >
+                 [GERAR_BRIEFING_TECNICO]
+              </button>
+           </div>
+           
            <button 
-             onClick={() => navigate('/tracker', { state: mockData })}
-             className="lastro-btn h-[72px] px-12 !bg-emerald-600 !text-black font-mono font-bold tracking-widest hover:scale-105 transition-all"
+             onClick={() => {
+               navigator.clipboard.writeText(`${window.location.origin}/resultado/${diagnosticoId}`);
+               alert('LINK_COPIADO // RELATÓRIO_ESTRATÉGICO_PRONTO_PARA_ENVIO');
+             }}
+             className="text-white/20 font-mono text-xs tracking-widest uppercase hover:text-emerald-500 transition-colors cursor-pointer p-4"
            >
-              [ACESSAR_SALA_DE_GUERRA]
-           </button>
-           <button 
-             onClick={() => navigate('/briefing')}
-             className="lastro-btn h-[72px] px-12 !bg-white !text-black font-mono font-bold tracking-widest hover:scale-105 transition-transform"
-           >
-              [GERAR_BRIEFING_TECNICO]
+              -- COMPARTILHAR_RESULTADOS_COM_O_BOARD --
            </button>
         </div>
 
