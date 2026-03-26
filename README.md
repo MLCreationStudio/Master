@@ -1,39 +1,73 @@
-# Lastro Engine v2.0 — GTM Intelligence
+# React + TypeScript + Vite
 
-> **"Onde a ciência encontra o mercado. Sem firulas, apenas dados."**
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-O **Lastro** é uma plataforma de inteligência de Go-To-Market (GTM) projetada para diagnosticar a viabilidade de negócios e estratégias de marketing através de um framework de 20 pilares fundamentais.
+Currently, two official plugins are available:
 
-## 🌌 Visão Zero UI & Cinematic Experience
-Este projeto utiliza uma interface imersiva baseada em **Atomic Design** e **Glassmorphism**, focada em remover o ruído visual e destacar a soberania dos dados.
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-### Pilares Tecnológicos:
-- **Frontend**: Vite + React + TypeScript + Vanilla CSS (Design Tokens).
-- **Backend**: Supabase (Edge Functions, Credit Ledger, Auth).
-- **Gamificação**: Sistema de XP e Badges baseado no *Lastro Score*.
+## React Compiler
 
----
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## 🤖 Instruções para IAs Auxiliares (Llama, GPT, etc.)
-Se você está auxiliando neste projeto, considere o seguinte contexto:
-1. **O Algoritmo ACSD**: O cálculo de score é baseado no *Algoritmo de Contexto e Soberania de Dados*. Ele avalia Viabilidade, ICP, Prazo e Mercado.
-2. **Estética Zero UI**: Mantenha a consistência visual em `index.css`. Use as variáveis HSL (`--brand-primary`, `--surface-glass`).
-3. **Escopo GTM**: Este não é apenas um app de marketing. É uma ferramenta de rigor matemático para proteger o capital do investidor.
+## Expanding the ESLint configuration
 
----
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-## 🛠️ Como Rodar Localmente
-```bash
-cd lastro-app
-npm install
-npm run dev
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
+
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
 
-## ☁️ Controle GitHub
-Para subir suas mudanças:
-1. `git add .`
-2. `git commit -m "feat: implement cinematic hud v2"`
-3. `git push origin main`
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
----
-*Lastro — Desenvolvido com Antigravity AIOX.*
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
