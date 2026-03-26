@@ -1,8 +1,5 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { GlassPanel } from '../components/ui';
-import { supabase } from '../lib/supabase'; // Assumindo que existe um cliente supabase exportado
-import './Diagnostico.css';
 
 export default function Diagnostico() {
   const navigate = useNavigate();
@@ -10,131 +7,102 @@ export default function Diagnostico() {
   const [urlInput, setUrlInput] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [loadingStep, setLoadingStep] = useState(0);
-  const [error, setError] = useState<string | null>(null);
 
   const processingSteps = [
-    "Iniciando varredura na URL alvo...",
-    "Acionando LLM-Router (Model: Claude-3.5-Sonnet)...",
-    "Extraindo posicionamento e diferenciais de mercado...",
-    "Mapeando ICP (Ideal Customer Profile) nos canais digitais...",
-    "Sincronizando com o Lastro Index (Benchmark 2026 BR)...",
-    "Finalizando Carga Rápida: Gerando contexto de diagnóstico..."
+    "Iniciando varredura na URL...",
+    "Acionando LLM-Router para extração de ICP...",
+    "Mapeando diferenciais de mercado...",
+    "Aplicando ACSD (Impostos BR 2026 e Sazonalidade)...",
+    "Cruzando dados com o Lastro-Engine v4.0...",
+    "Gerando Parecer Técnico Final..."
   ];
 
   useEffect(() => {
-    let interval: any;
-    if (isProcessing && loadingStep < processingSteps.length) {
-      // Avança os passos visuais enquanto a função roda em paralelo ou simulada
-      interval = setTimeout(() => {
-        setLoadingStep((prev) => prev + 1);
-      }, 2000); 
+    if (isProcessing) {
+      const interval = setInterval(() => {
+        setLoadingStep((prev) => {
+          if (prev < processingSteps.length - 1) return prev + 1;
+          clearInterval(interval);
+          setTimeout(() => navigate('/resultado'), 1000);
+          return prev;
+        });
+      }, 1500);
+      return () => clearInterval(interval);
     }
-    return () => clearTimeout(interval);
-  }, [isProcessing, loadingStep, processingSteps.length]);
+  }, [isProcessing, navigate]);
 
-  const handleStartAnalysis = async (e: React.FormEvent) => {
+  const handleStartAnalysis = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!urlInput.trim()) return;
-    
     setIsProcessing(true);
-    setError(null);
-
-    try {
-      // Chamada real para a Edge Function do Supabase
-      const { data, error: funcError } = await supabase.functions.invoke('analisar-carga-rapida', {
-        body: { url: urlInput.trim() }
-      });
-
-      if (funcError) throw funcError;
-
-      // Espera o carregamento visual terminar (ou acelera se já tiver o dado)
-      setTimeout(() => {
-        navigate('/conversa', { state: { cargaRapida: { isPreenchido: true, dados: data.dados } } });
-      }, 4000); // Garante que o usuário veja pelo menos uns 2 s do terminal se for muito rápido
-
-    } catch (err: any) {
-      console.error('Erro na Carga Rápida:', err);
-      setError("Falha na varredura automatizada. Redirecionando para diagnóstico manual...");
-      setTimeout(() => {
-        navigate('/conversa');
-      }, 3000);
-    }
   };
 
   return (
-    <div className="diagnostico-page terminal-bg fade-in min-h-screen flex flex-col">
-      <div className="diagnostico-container container max-w-800 mx-auto min-h-screen flex items-center justify-center px-6">
+    <div className="diagnostico-page terminal-bg min-h-screen flex flex-col items-center justify-center relative overflow-hidden scan-effect">
+      <div className="diagnostico-container container max-w-1000 mx-auto min-h-screen flex items-center justify-center px-6 relative z-10">
         
         {!isProcessing ? (
-          <div className="input-phase w-full text-center stack gap-12 flex flex-col items-center">
+          <div className="input-phase w-full text-center stack gap-16 flex flex-col items-center fade-in-up">
             <div className="fade-in">
-               <span className="font-mono text-xs tracking-[0.6em] text-white/20 uppercase border-b border-white/5 pb-2">
-                  MODULO_01 // ANALISE_PARAMETRICA
+               <span className="font-mono text-xs tracking-widest-plus text-white/20 uppercase border-b border-white/5 pb-4">
+                  MODULO_01 // PARAMETRIC_AUDIT
                </span>
             </div>
             
-            <h1 className="text-5xl lg:text-7xl font-display leading-tight text-white mb-4">
+            <h1 className="text-6xl lg:text-8xl font-display leading-[0.9] text-white tracking-tighter">
               A verdade sobre <br />
-              <span className="text-emerald-500 italic">o seu negócio.</span>
+              <span className="text-emerald-500 italic-serif text-glow-emerald">o seu negócio.</span>
             </h1>
             
-            <p className="text-white/30 text-sm font-mono tracking-[0.2em] max-w-500 mx-auto mb-8 uppercase">
-              O sistema exige uma URL para iniciar a varredura tática de mercado.
+            <p className="text-white/20 text-sm font-mono tracking-widest text-white/30 max-w-500 mx-auto mb-12 uppercase leading-loose">
+              Acione o motor de extração termográfica <br /> inserindo a URL alvo abaixo.
             </p>
 
-            <form onSubmit={handleStartAnalysis} className="diagnostico-form stack gap-8 w-full max-w-500 mx-auto flex flex-col items-center">
-              <div className="input-group relative w-full">
-                <span className="absolute left-6 top-1/2 -translate-y-1/2 text-emerald-500 font-mono">&gt;</span>
+            <form onSubmit={handleStartAnalysis} className="diagnostico-form stack gap-12 w-full max-w-500 mx-auto flex flex-col items-center">
+              <div className="input-group relative w-full group">
+                <div className="absolute -inset-1 bg-emerald-500/5 rounded-sm opacity-0 group-focus-within:opacity-100 transition-opacity blur-md" />
+                <span className="absolute left-8 top-1/2 -translate-y-1/2 text-emerald-500 font-mono text-lg">&gt;</span>
                 <input 
                   type="url" 
                   placeholder="DIGITE_A_URL_AQUI..."
                   value={urlInput}
                   onChange={(e) => setUrlInput(e.target.value)}
-                  className="lastro-input-v2 !pl-12 font-mono text-sm !bg-black/60 border-white/5 focus:border-emerald-500/50 transition-all h-[64px] w-full"
+                  className="lastro-input-v2 !pl-16 font-mono text-sm !bg-black/80 border-white/10 focus:border-emerald-500 transition-all h-[80px] w-full tracking-widest"
                   required
-                  autoComplete="off"
                 />
               </div>
-              <button type="submit" className="lastro-btn lastro-btn-primary w-full justify-center group font-mono h-[72px] !bg-emerald-600 !text-black border-auth">
-                <span className="tracking-[0.3em] font-bold">[EXTRAIR_MATEMATICA_REAL]</span>
-                <span className="ml-4 opacity-50 group-hover:translate-x-2 transition-transform">_</span>
+              <button type="submit" className="lastro-btn w-full justify-center group font-mono h-[88px] !bg-white !text-black hover:!bg-emerald-500 transition-all duration-500">
+                <span className="tracking-[0.4em] font-bold">[INICIAR_VARREDURA_PARAMETRICA]</span>
+                <span className="ml-4 opacity-50 group-hover:translate-x-3 transition-transform">_</span>
               </button>
             </form>
-            
-            <p className="text-[0.45rem] font-mono text-white/5 uppercase tracking-[0.8em] mt-20">
-               LASTRO_CORE_DRIVE // SECURE_BOOT_INIT
-            </p>
           </div>
         ) : (
-          <div className="processing-phase w-full max-w-[600px]">
-            <GlassPanel className="p-8 terminal-border-glow !bg-black/60 relative overflow-hidden">
-               <div className="scanning-line" />
-               <div className="flex items-center gap-4 mb-8">
-                  <div className="terminal-spinner" />
-                  <h2 className="font-mono text-[0.7rem] uppercase tracking-[0.4em] text-emerald-500">Analise_Em_Andamento...</h2>
+          <div className="processing-terminal w-full max-w-800 glass-cockpit p-12 rounded-sm relative fade-in-up">
+            <div className="terminal-header flex justify-between items-center mb-10 border-b border-white/5 pb-6">
+               <div className="flex gap-2">
+                  <div className="w-2 h-2 rounded-full bg-red-800" />
+                  <div className="w-2 h-2 rounded-full bg-yellow-800" />
+                  <div className="w-2 h-2 rounded-full bg-emerald-800" />
                </div>
-
-               <div className="terminal-log-window space-y-4">
-                  {processingSteps.slice(0, loadingStep + 1).map((step, index) => (
-                    <div 
-                      key={index} 
-                      className={`font-mono text-[0.65rem] border-l-2 pl-4 py-1 transition-all duration-500 ${index === loadingStep ? 'border-emerald-500 text-emerald-400' : 'border-white/5 text-white/20'}`}
-                    >
-                      <span className="opacity-50 mr-2">[{new Date().toLocaleTimeString().slice(3)}]</span>
-                      &gt; {step}
-                    </div>
-                  ))}
+               <div className="font-mono text-xs text-white/30 tracking-widest">
+                  TERMINAL_STATUS: ACTIVE_SCAN
                </div>
-
-               {error && (
-                 <div className="mt-8 pt-4 border-t border-red-900/30 text-red-500 font-mono text-[0.6rem] animate-pulse">
-                    ERROR_DB: {error}
-                 </div>
-               )}
-            </GlassPanel>
+            </div>
+            
+            <div className="terminal-body font-mono text-sm space-y-4">
+              <div className="flex gap-4">
+                <span className="text-emerald-500 opacity-50">[{new Date().toLocaleTimeString()}]</span>
+                <span className="text-white/80">{processingSteps[loadingStep]}</span>
+              </div>
+              <div className="w-full bg-white/5 h-1 mt-8 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-emerald-500 transition-all duration-1000 shadow-[0_0_15px_rgba(16,185,129,0.5)]" 
+                  style={{ width: `${(loadingStep + 1) * 16.6}%` }} 
+                />
+              </div>
+            </div>
           </div>
         )}
-
       </div>
     </div>
   );
