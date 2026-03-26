@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { generateDiagnosticMock } from '../utils/engine-mock';
 
 export default function Diagnostico() {
   const navigate = useNavigate();
@@ -20,16 +21,17 @@ export default function Diagnostico() {
   useEffect(() => {
     if (isProcessing) {
       const interval = setInterval(() => {
-        setLoadingStep((prev) => {
+        setLoadingStep((prev: number) => {
           if (prev < processingSteps.length - 1) return prev + 1;
           clearInterval(interval);
-          setTimeout(() => navigate('/resultado'), 1000);
+          const mockData = generateDiagnosticMock(urlInput);
+          setTimeout(() => navigate('/resultado', { state: mockData }), 1000);
           return prev;
         });
       }, 1500);
       return () => clearInterval(interval);
     }
-  }, [isProcessing, navigate]);
+  }, [isProcessing, navigate, urlInput, processingSteps.length]);
 
   const handleStartAnalysis = (e: React.FormEvent) => {
     e.preventDefault();

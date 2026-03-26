@@ -4,11 +4,15 @@ import { useLocation, useNavigate } from 'react-router-dom';
 export default function Resultado() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { url, scoreData, diagnosticoId } = location.state || { 
+  const mockData = location.state as any;
+  const { url, scoreData, diagnosticoId, metrics } = mockData || { 
     url: 'N/A', 
     scoreData: { score: 84, level: 'HIGH_STABILITY', status: 'VIABLE' },
-    diagnosticoId: 'DEV_NULL'
+    diagnosticoId: 'DEV_NULL',
+    metrics: []
   };
+
+  const getMetric = (key: string) => metrics?.find((m: any) => m.key === key)?.value || 0;
 
   return (
     <div className="resultado-hud terminal-bg select-none min-h-screen flex flex-col items-center relative overflow-hidden scan-effect">
@@ -30,10 +34,9 @@ export default function Resultado() {
             <div className="score-cockpit relative w-[300px] h-[300px] flex items-center justify-center">
                <div className="score-value-serif flex flex-col items-center justify-center relative z-10">
                   <span className="text-9xl lg:text-[10rem] font-display leading-none text-accent-gold text-glow-gold">{scoreData.score}</span>
-                  <span className="font-mono text-xs tracking-widest-plus text-white/20 mt-4">UNIDADES_DE_LASTRO</span>
+                  <span className="font-mono text-xs tracking-widest-plus text-white/20 mt-4 uppercase">UNIDADES_DE_LASTRO</span>
                </div>
-               <div className="absolute inset-0 border border-white/5 rounded-full animate-pulse-slow pointer-events-none scale-125" />
-               <div className="absolute inset-0 border border-accent-gold/10 rounded-full animate-spin-slow pointer-events-none scale-150 border-dashed" />
+               <div className="absolute inset-0 border border-white/5 rounded-full animate-pulse pointer-events-none scale-125" />
             </div>
           </div>
 
@@ -47,7 +50,22 @@ export default function Resultado() {
                </span>
             </div>
 
-            <p className="text-white/40 font-mono text-sm tracking-widest uppercase max-w-600 leading-loose">
+            <div className="metrics-summary grid grid-cols-3 gap-12 w-full max-w-1000 mt-8">
+               <div className="metric-item border-l border-white/5 pl-8">
+                  <p className="font-mono text-xs text-white/20 uppercase mb-2">PROJEÇÃO_CAC</p>
+                  <p className="font-display text-4xl text-white">R$ {getMetric('cac_predicted').toFixed(2)}</p>
+               </div>
+               <div className="metric-item border-l border-white/5 pl-8">
+                  <p className="font-mono text-xs text-white/20 uppercase mb-2">TARGET_ROAS</p>
+                  <p className="font-display text-4xl text-white">{getMetric('roas_target').toFixed(1)}x</p>
+               </div>
+               <div className="metric-item border-l border-white/5 pl-8">
+                  <p className="font-mono text-xs text-white/20 uppercase mb-2">IMPACTO_ACSD</p>
+                  <p className="font-display text-4xl text-emerald-500">{(getMetric('tax_impact_2026') * 100).toFixed(0)}%</p>
+               </div>
+            </div>
+
+            <p className="text-white/40 font-mono text-sm tracking-widest uppercase max-w-800 leading-loose mt-12">
                A pontuação reflete a robustez da estrutura de margens e a escalabilidade <br /> do funil de aquisição mapeado na URL: <span className="text-white">{url}</span>
             </p>
           </div>
@@ -55,8 +73,8 @@ export default function Resultado() {
 
         <div className="w-full flex justify-center gap-8 mt-12 pb-20">
            <button 
-             onClick={() => navigate('/tracker')}
-             className="lastro-btn h-[72px] px-12 !bg-emerald-600 !text-black font-mono font-bold tracking-widest hover:scale-105 transition-transform"
+             onClick={() => navigate('/tracker', { state: mockData })}
+             className="lastro-btn h-[72px] px-12 !bg-emerald-600 !text-black font-mono font-bold tracking-widest hover:scale-105 transition-all"
            >
               [ACESSAR_SALA_DE_GUERRA]
            </button>
