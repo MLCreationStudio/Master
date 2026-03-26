@@ -1,92 +1,71 @@
-import { useNavigate } from 'react-router-dom';
-import './Briefing.css';
+import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function Briefing() {
+  const location = useLocation();
   const navigate = useNavigate();
+  const mockData = location.state as any;
+
+  const { url, scoreData, metrics } = mockData || { 
+    url: 'N/A', 
+    scoreData: { score: 0 },
+    metrics: []
+  };
+
+  const getMetric = (key: string) => metrics?.find((m: any) => m.key === key)?.value || 0;
 
   return (
-    <div className="briefing-container select-none bg-[#f8fafc] text-[#0f172a] min-h-screen py-20 px-6 font-mono flex flex-col items-center">
-      <div className="max-w-1000 w-full mx-auto bg-white shadow-2xl p-16 border border-slate-200 relative overflow-hidden">
+    <div className="briefing-page bg-white min-h-screen flex flex-col items-center pt-20 pb-32 px-6 text-black selection:bg-black selection:text-white">
+      <div className="briefing-doc max-w-800 w-full animate-fade-in">
         
-        {/* Header Contract Style */}
-        <div className="flex justify-between items-start mb-16 border-b-2 border-slate-900 pb-8">
-           <div className="stack gap-2">
-              <h1 className="font-display text-4xl uppercase tracking-tighter">Briefing_Execução</h1>
-              <p className="text-[0.65rem] tracking-[0.4em] text-slate-400">PROTOCOLO: LASTRO_GTM_OFFICIAL</p>
-           </div>
-           <div className="text-right">
-              <p className="font-bold text-xs">ID: {Math.random().toString(36).substring(7).toUpperCase()}</p>
-              <p className="text-[0.6rem] text-slate-400">DATA: {new Date().toLocaleDateString()}</p>
+        {/* Header Rail (Print Style) */}
+        <div className="flex justify-between items-start border-b-2 border-black pb-12 mb-16">
+           <div className="font-display text-4xl uppercase tracking-tighter">Lastro.</div>
+           <div className="text-right font-mono text-[10px] leading-tight opacity-50 uppercase">
+              Doc Type: Technical_Strategic_Briefing <br />
+              Ref: {url} <br />
+              Status: Verified_ACSD_V4.0
            </div>
         </div>
 
-        {/* Section 1: Parameters */}
-        <div className="section mb-12">
-           <h2 className="font-display text-xl border-l-[6px] border-slate-900 pl-4 mb-8 uppercase">01. Parâmetros Matemáticos</h2>
-           <div className="grid grid-cols-2 gap-8">
-              <div className="parameter-card p-6 bg-slate-50 border border-slate-100">
-                 <p className="text-[0.55rem] text-slate-400 mb-1 uppercase tracking-widest">CAC_TETO_RECOMENDADO</p>
-                 <p className="text-2xl font-display">R$ 48,00</p>
-              </div>
-              <div className="parameter-card p-6 bg-slate-50 border border-slate-100">
-                 <p className="text-[0.55rem] text-slate-400 mb-1 uppercase tracking-widest">VOLUME_EST_MENSAL</p>
-                 <p className="text-2xl font-display">450 - 600 LEADS</p>
-              </div>
-           </div>
-        </div>
-
-        {/* Section 2: Creative Guidelines */}
-        <div className="section mb-12">
-           <h2 className="font-display text-xl border-l-[6px] border-slate-900 pl-4 mb-8 uppercase">02. Diretrizes Criativas (Copy & Angle)</h2>
-           <div className="stack gap-6 text-sm leading-relaxed text-slate-700">
-              <p>
-                 <strong>Gancho Principal:</strong> "A ciência contra a intuição. Pare de queimar caixa e comece a escalar com lastro."
+        <div className="doc-content space-y-16">
+           <section>
+              <h1 className="font-display text-6xl leading-[0.9] mb-8">Parecer de Defesa <br /> <span className="italic">Matemática.</span></h1>
+              <p className="font-mono text-sm leading-relaxed border-l-4 border-black pl-8 mb-12">
+                 Este documento serve como a base analítica para a tomada de decisão estratégica do CMO. 
+                 Abaixo estão os parâmetros de viabilidade auditados pelo motor Lastro.
               </p>
-              <p>
-                 <strong>Tom de Voz:</strong> Autoritário, Analítico, Sóbrio. Evitar adjetivos vazios. Focar em resultados binários.
-              </p>
-              <div className="flex gap-4 mt-4">
-                 <div className="w-12 h-12 bg-[#080F0C] rounded-sm shadow-sm" title="Lastro Deep Green" />
-                 <div className="w-12 h-12 bg-[#D4AF37] rounded-sm shadow-sm" title="Authority Bronze" />
-                 <div className="w-12 h-12 bg-[#E2E8F0] rounded-sm shadow-sm" title="Ice Grey" />
+           </section>
+
+           <section className="grid grid-cols-2 gap-12 border-t border-black/10 pt-12">
+              <div>
+                 <p className="font-mono text-[10px] uppercase opacity-40 mb-2">Score de Estabilidade</p>
+                 <p className="font-display text-5xl">{scoreData.score}%</p>
               </div>
-           </div>
+              <div>
+                 <p className="font-mono text-[10px] uppercase opacity-40 mb-2">Impacto ACSD (Impostos 2026)</p>
+                 <p className="font-display text-5xl">{(getMetric('tax_impact_2026') * 100).toFixed(0)}%</p>
+              </div>
+           </section>
+
+           <section className="space-y-8">
+              <h3 className="font-display text-[2rem]">Diretrizes de Execução</h3>
+              <div className="space-y-6 font-mono text-xs leading-loose">
+                 <p>1. O CAC de <strong>R$ {getMetric('cac_predicted').toFixed(2)}</strong> exige uma taxa de conversão mínima de 3.2% no TOFU.</p>
+                 <p>2. A margem bruta deve ser protegida contra a volatilidade sazonal mapeada em 12.4% para o nicho detectado.</p>
+                 <p>3. Recomendação: Escalar orçamento apenas após validação do ROAS de <strong>{getMetric('roas_target').toFixed(1)}x</strong>.</p>
+              </div>
+           </section>
         </div>
 
-        {/* Section 3: Tech Settings */}
-        <div className="section mb-20">
-           <h2 className="font-display text-xl border-l-[6px] border-slate-900 pl-4 mb-8 uppercase">03. Configurações Técnicas</h2>
-           <div className="bg-slate-900 text-white p-6 font-mono text-[0.65rem] leading-loose rounded-sm">
-              &gt; PIXEL_EVENT: PURCHASE_VALIDATED <br />
-              &gt; BID_STRATEGY: COST_CAP (MARGEM_SEGURANCA: 12%) <br />
-              &gt; ATTRIBUTION: 7-DAY_CLICK_1-DAY_VIEW <br />
-              &gt; AUDIENCE_REFINEMENT: B2B_BUSINESS_OWNERS + HIGH_INTENT_KEYWORDS
-           </div>
-        </div>
-
-        {/* Footer Sign-off */}
-        <div className="border-t border-slate-100 pt-12 flex justify-between items-end">
-           <div className="font-mono text-[0.5rem] text-slate-300 tracking-[0.3em]">
-              CERTIFIED_BY_LASTRO_AI_ORCHESTRATOR
-           </div>
-           <button 
-             className="px-8 py-3 bg-slate-900 text-white font-mono text-xs hover:bg-slate-800 transition-colors"
-             onClick={() => window.print()}
-           >
-              [IMPRIMIR_BRIEFING_PDF]
+        <footer className="mt-32 pt-12 border-t border-black/10 flex justify-between items-center no-print">
+           <button onClick={() => navigate(-1)} className="font-mono text-xs uppercase hover:underline">
+              [CONCLUIR_REVISÃO]
            </button>
-        </div>
-
-        {/* Watermark */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.02] pointer-events-none -rotate-45">
-           <span className="text-[20rem] font-display">LASTRO</span>
-        </div>
-      </div>
-
-      <div className="max-w-[850px] mx-auto mt-12 flex justify-center">
-         <button onClick={() => navigate(-1)} className="text-slate-400 font-mono text-xs hover:text-slate-900 transition-colors uppercase tracking-widest">
-            ← Retornar ao Cockpit
-         </button>
+           <button onClick={() => window.print()} className="bg-black text-white px-8 py-3 font-mono text-xs uppercase hover:bg-zinc-800 transition-colors">
+              GERAR_PDF_DO_BRIEFING
+           </button>
+        </footer>
       </div>
     </div>
   );
