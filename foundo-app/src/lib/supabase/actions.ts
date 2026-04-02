@@ -2,6 +2,7 @@
 
 import { createClient, createAdminClient } from "./server";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import type { AdmissionFormData, UserStatus } from "../types";
 
 /**
@@ -83,7 +84,7 @@ export async function signInWithEmailPassword(formData: FormData) {
   if (error) return { error: error.message };
 
   revalidatePath("/", "layout");
-  return { success: true };
+  redirect("/admissao");
 }
 
 /**
@@ -117,7 +118,7 @@ export async function signUpWithEmailPassword(formData: FormData) {
   if (error) return { error: error.message };
 
   revalidatePath("/", "layout");
-  return { success: true };
+  redirect("/admissao");
 }
 
 /**
