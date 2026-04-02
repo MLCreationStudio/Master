@@ -94,7 +94,19 @@ export async function signUpWithEmailPassword(formData: FormData) {
   const password = formData.get("password") as string;
   const supabase = await createClient();
 
-  const { error } = await supabase.auth.signUp({
+  // 1. Manual check for existing user to give a better error message
+  const { data: existingUser } = await supabase
+    .from("users")
+    .select("id")
+    .eq("email", email)
+    .maybeSingle();
+
+  if (existingUser) {
+    return { error: "Este e-mail já está em uso. Tente fazer login em vez de criar uma conta." };
+  }
+
+  // 2. Proceed with signup
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
