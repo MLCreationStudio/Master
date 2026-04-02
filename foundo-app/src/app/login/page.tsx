@@ -2,34 +2,40 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
 import styles from "../page.module.css";
 import loginStyles from "./login.module.css";
 
+import { signInWithEmailPassword, signUpWithEmailPassword } from "@/lib/supabase/actions";
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setMessage(null);
 
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback?next=/admissao`,
-      },
-    });
+    try {
+      const formData = new FormData();
+      formData.append("email", email);
+      formData.append("password", password);
 
-    if (error) {
-      setMessage({ type: "error", text: error.message });
-    } else {
-      setMessage({ type: "success", text: "Link de login enviado! Verifique seu e-mail." });
+      if (isSignUp) {
+        await signUpWithEmailPassword(formData);
+        setMessage({ type: "success", text: "Conta criada! Verifique seu e-mail para confirmar (se necessário) ou tente entrar." });
+      } else {
+        await signInWithEmailPassword(formData);
+        // Middleware will handle redirection after successful login
+      }
+    } catch (err: any) {
+      setMessage({ type: "error", text: err.message || "Erro na autenticação" });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -41,13 +47,13 @@ export default function LoginPage() {
           </div>
 
           <h1 className={styles.heroTitle} style={{ fontSize: "var(--font-size-2xl)", textAlign: "center" }}>
-            Bem-vindo de volta
+            {isSignUp ? "Criar sua conta" : "Bem-vindo de volta"}
           </h1>
           <p className={styles.heroSubtitle} style={{ textAlign: "center", marginBottom: "var(--space-xl)" }}>
-            Entre com seu e-mail para continuar sua jornada no Foundo.
+            {isSignUp ? "Escolha uma senha para começar sua jornada." : "Entre com seus dados para continuar no Foundo."}
           </p>
 
-          <form className={loginStyles.loginForm} onSubmit={handleLogin}>
+          <form className={loginStyles.loginForm} onSubmit={handleSubmit}>
             <div className="form-group">
               <label className="input-label">Seu melhor e-mail</label>
               <input
@@ -61,15 +67,39 @@ export default function LoginPage() {
               />
             </div>
 
+            <div className="form-group">
+              <label className="input-label">Senha</label>
+              <input
+                type="password"
+                className="input"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+                id="login-password"
+              />
+            </div>
+
             <button
               type="submit"
               className="btn btn-primary w-full"
               disabled={loading}
               id="login-submit"
             >
-              {loading ? "Enviando acesso..." : "Entrar no Foundo →"}
+              {loading ? (isSignUp ? "Criando..." : "Entrando...") : (isSignUp ? "Criar minha conta →" : "Entrar no Foundo →")}
             </button>
           </form>
+
+          <div style={{ marginTop: "var(--space-lg)", textAlign: "center" }}>
+             <button 
+                className="text-accent hover:underline text-sm font-medium"
+                onClick={() => setIsSignUp(!isSignUp)}
+                type="button"
+             >
+                {isSignUp ? "Já tenho conta? Entrar" : "Ainda não tem conta? Criar agora"}
+             </button>
+          </div>
 
           {message && (
             <div className={`${loginStyles.message} ${loginStyles[message.type]}`}>

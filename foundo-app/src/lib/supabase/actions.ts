@@ -68,6 +68,45 @@ export async function submitAdmission(formData: AdmissionFormData) {
 }
 
 /**
+ * Sign in with email and password
+ */
+export async function signInWithEmailPassword(formData: FormData) {
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+  const supabase = await createClient();
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error) throw error;
+
+  revalidatePath("/", "layout");
+}
+
+/**
+ * Sign up with email and password
+ */
+export async function signUpWithEmailPassword(formData: FormData) {
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+  const supabase = await createClient();
+
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback?next=/admissao`,
+    },
+  });
+
+  if (error) throw error;
+
+  revalidatePath("/", "layout");
+}
+
+/**
  * Admin action to update user status (Approve/Reject)
  */
 export async function updateUserStatus(userId: string, status: UserStatus) {
