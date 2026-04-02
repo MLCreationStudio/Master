@@ -193,3 +193,92 @@ export async function getDailyInterestCount() {
   }
   return count || 0;
 }
+
+/**
+ * Chat/Conversation Actions
+ */
+
+// Format output to avoid Next.js serialization issues and easily consume in UI
+export async function getConversations() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return [];
+
+  // Get conversations with match details
+  const { data, error } = await supabase
+    .from("conversations")
+    .select(`
+      id,
+      status,
+      created_at,
+      matches!inner (
+        user_a_id,
+        user_b_id,
+        user_a:users!matches_user_a_id_fkey(id, name, role, avatar_url),
+        user_b:users!matches_user_b_id_fkey(id, name, role, avatar_url)
+      )
+    `)
+    .or(`user_a_id.eq.${user.id},user_b_id.eq.${user.id}`, { foreignTable: 'matches' })
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error("Error fetching conversations:", error);
+    return [];
+  }
+
+  // Format response so UI gets "the other person" info easily
+  return data.map((conv: any) => {
+    const isUserA = conv.matches.user_a_id === user.id;
+    const otherUser = isUserA ? conv.matches.user_b : conv.matches.user_a;
+    
+    return {
+      id: conv.id,
+      otherUser: {
+        id: otherUser.id,
+        name: otherUser.name,
+        role: otherUser.role,
+        avatar_url: otherUser.avatar_url
+      },
+      time: conv.created_at,
+    };
+  });
+}
+
+export async function getMessages(conversationId: string) {
+  const supabase = await createClient();
+  
+  const { data, error } = await supabase
+    .from("messages")
+    .select("*")
+    .eq("conversation_id", conversationId)
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error("Error fetching messages:", error);
+    return [];
+  }
+  
+  return data;
+}
+
+export async function sendMessage(conversationId: string, content: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  const { data, error } = await supabase
+    .from("messages")
+    .insert({
+      conversation_id: conversationId,
+      sender_id: user.id,
+      content,
+      is_system_message: false
+    })
+    .select()
+    .single();
+
+  if (error) throw error;
+  
+  revalidatePath("/chat");
+  return data;
+}
