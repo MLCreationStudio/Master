@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import styles from "./chat.module.css";
 import { createClient } from "@/lib/supabase/client";
 import { getConversations, getMessages, sendMessage } from "@/lib/supabase/actions";
 
-export default function ChatPage() {
+function ChatContent() {
   const searchParams = useSearchParams();
   const initConvId = searchParams.get("id");
 
@@ -219,5 +219,13 @@ export default function ChatPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function ChatPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-tertiary">Carregando chat...</div>}>
+      <ChatContent />
+    </Suspense>
   );
 }
