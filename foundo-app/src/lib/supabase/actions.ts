@@ -266,7 +266,7 @@ export async function getConversations() {
   }
 
   // Format response so UI gets "the other person" info easily
-  return data.map((conv: any) => {
+  return (data as any[]).map((conv) => {
     const isUserA = conv.matches.user_a_id === user.id;
     const otherUser = isUserA ? conv.matches.user_b : conv.matches.user_a;
     

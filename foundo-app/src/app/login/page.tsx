@@ -31,8 +31,9 @@ export default function LoginPage() {
         await signInWithEmailPassword(formData);
         // Middleware will handle redirection after successful login
       }
-    } catch (err: any) {
-      setMessage({ type: "error", text: err.message || "Erro na autenticação" });
+    } catch (err: unknown) {
+      const error = err as Error;
+      setMessage({ type: "error", text: error.message || "Erro na autenticação" });
     } finally {
       setLoading(false);
     }
