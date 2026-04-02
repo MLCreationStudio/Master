@@ -67,7 +67,7 @@ export default function LoginPage() {
               disabled={loading}
               id="login-submit"
             >
-              {loading ? "Enviando link..." : "Receber link de acesso →"}
+              {loading ? "Enviando acesso..." : "Entrar no Foundo →"}
             </button>
           </form>
 
