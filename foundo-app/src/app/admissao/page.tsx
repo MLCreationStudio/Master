@@ -11,7 +11,8 @@ import type {
   FinancialExpectation,
   AdmissionFormData,
 } from "@/lib/types";
-import { submitAdmission } from "@/lib/supabase/actions";
+import { useRouter } from "next/navigation";
+import { submitAdmission, getUserProfile } from "@/lib/supabase/actions";
 
 const STAGES: { value: ProjectStage; label: string }[] = [
   { value: "exploration", label: "Exploração — validando ideia" },
@@ -66,11 +67,28 @@ export default function AdmissaoPage() {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [profileLoading, setProfileLoading] = useState(true);
+  const router = useRouter();
 
-  // Fix hydration mismatch by only rendering after mount
+  // Fix hydration mismatch and check initial status
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    const checkStatus = async () => {
+      setMounted(true);
+      const profile = await getUserProfile();
+      
+      if (profile) {
+        if (profile.status === "active") {
+          router.push("/deck");
+        } else if (profile.status === "pending" || profile.status === "rejected") {
+          setSubmitted(true);
+          setStep(6);
+        }
+      }
+      setProfileLoading(false);
+    };
+
+    checkStatus();
+  }, [router]);
 
   function updateField<K extends keyof AdmissionFormData>(
     key: K,
@@ -129,7 +147,7 @@ export default function AdmissaoPage() {
   };
   const back = () => setStep((s) => Math.max(s - 1, 1));
 
-  if (!mounted) {
+  if (!mounted || profileLoading) {
     return (
       <div className={styles.admissao} style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <div className="animate-pulse text-tertiary">Carregando formulário...</div>

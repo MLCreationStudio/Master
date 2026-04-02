@@ -25,9 +25,11 @@ export default function AdminPage() {
   const [activity, setActivity] = useState<any[]>([]);
 
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchDashboardData = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
       if (activeTab === "queue") {
         const data = await getPendingApplications();
@@ -45,6 +47,7 @@ export default function AdminPage() {
       setMetrics(metricsData);
     } catch (err) {
       console.error("Error fetching admin data:", err);
+      setError("Falha ao carregar dados do painel. Verifique os logs do servidor.");
     } finally {
       setLoading(false);
     }
@@ -69,6 +72,12 @@ export default function AdminPage() {
   return (
     <div className={styles.adminPage}>
       <h1 className={styles.adminTitle}>Painel Admin</h1>
+
+      {error && (
+        <div className="input-error-msg" style={{ marginBottom: "20px", textAlign: "center" }}>
+          {error}
+        </div>
+      )}
 
       {/* Metrics */}
       <div className={styles.metricsGrid}>

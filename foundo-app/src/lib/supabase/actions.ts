@@ -133,10 +133,35 @@ export async function updateUserStatus(userId: string, status: UserStatus) {
     .update({ status })
     .eq("id", userId);
 
-  if (error) throw error;
+  if (error) {
+    console.error("Error updating user status:", error);
+    throw error;
+  }
 
   revalidatePath("/admin");
   revalidatePath("/deck");
+}
+
+/**
+ * Get current user profile status and role
+ */
+export async function getUserProfile() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const { data, error } = await supabase
+    .from("users")
+    .select("status, role")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Error fetching user profile:", error);
+    return null;
+  }
+
+  return data;
 }
 
 /**
@@ -155,7 +180,10 @@ export async function getPendingApplications() {
     .eq("status", "pending")
     .order("created_at", { ascending: false });
 
-  if (error) throw error;
+  if (error) {
+    console.error("Error fetching pending applications:", error);
+    return [];
+  }
   return data;
 }
 
@@ -346,27 +374,42 @@ export async function getAdminMetrics() {
   const adminSupabase = createAdminClient();
 
   // 1. Total Active Users
-  const { count: activeUsers } = await adminSupabase
+  const { count: activeUsers, error: usersError } = await adminSupabase
     .from("users")
     .select("*", { count: "exact", head: true })
     .eq("status", "active");
 
+  if (usersError) {
+    console.error("Error fetching active users count:", usersError);
+  }
+
   // 2. Total Matches
-  const { count: totalMatches } = await adminSupabase
+  const { count: totalMatches, error: matchesError } = await adminSupabase
     .from("matches")
     .select("*", { count: "exact", head: true });
 
-  // 3. Conversations Started (have at least one non-system message)
-  // Simplified for MVP: total conversations (any match generates one)
-  const { count: totalConversations } = await adminSupabase
+  if (matchesError) {
+    console.error("Error fetching total matches count:", matchesError);
+  }
+
+  // 3. Conversations Started
+  const { count: totalConversations, error: convsError } = await adminSupabase
     .from("conversations")
     .select("*", { count: "exact", head: true });
 
-  // 4. Success Stories (Mock or simplified for MVP based on project status "traction" or "expansion")
-  const { count: tractionProjects } = await adminSupabase
+  if (convsError) {
+    console.error("Error fetching total conversations count:", convsError);
+  }
+
+  // 4. Success Stories
+  const { count: tractionProjects, error: tractionProjectsError } = await adminSupabase
     .from("projects")
     .select("*", { count: "exact", head: true })
     .in("stage", ["traction", "expansion"]);
+
+  if (tractionProjectsError) {
+    console.error("Error fetching traction projects count:", tractionProjectsError);
+  }
 
   return {
     activeUsers: activeUsers || 0,
