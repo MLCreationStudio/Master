@@ -49,10 +49,10 @@ export default function LandingPage() {
             found<span className={styles.logoAccent}>o</span>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/login" className="btn btn-ghost btn-sm">
+            <Link href="/login?mode=login" className="btn btn-ghost btn-sm">
               Entrar
             </Link>
-            <Link href="/login" className="btn btn-secondary btn-sm">
+            <Link href="/login?mode=signup" className="btn btn-secondary btn-sm">
               Quero participar
             </Link>
           </div>
@@ -99,7 +99,7 @@ export default function LandingPage() {
               <div style={{ marginTop: "var(--space-md)", textAlign: "center" }}>
                  <p className="text-sm text-tertiary">
                    Já tem conta?{" "}
-                   <Link href="/login" className="text-accent hover:underline">
+                   <Link href="/login?mode=login" className="text-accent hover:underline">
                      Entrar aqui
                    </Link>
                  </p>
@@ -235,7 +235,7 @@ export default function LandingPage() {
             Entre na lista de espera. Vagas limitadas — priorizamos perfis com
             projetos concretos e contribuição verificável.
           </p>
-          <Link href="/login" className="btn btn-primary btn-lg">
+          <Link href="/login?mode=signup" className="btn btn-primary btn-lg">
             Quero participar →
           </Link>
         </section>

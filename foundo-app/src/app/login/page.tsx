@@ -1,17 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import styles from "../page.module.css";
 import loginStyles from "./login.module.css";
 
 import { signInWithEmailPassword, signUpWithEmailPassword } from "@/lib/supabase/actions";
 
-export default function LoginPage() {
+function LoginContent() {
+  const searchParams = useSearchParams();
   const [mounted, setMounted] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(searchParams.get("mode") === "signup");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
@@ -29,13 +31,19 @@ export default function LoginPage() {
       formData.append("email", email);
       formData.append("password", password);
 
+      let result;
       if (isSignUp) {
-        await signUpWithEmailPassword(formData);
-        setMessage({ type: "success", text: "Conta criada! Verifique seu e-mail para confirmar (se necessário) ou tente entrar." });
+        result = await signUpWithEmailPassword(formData);
       } else {
-        await signInWithEmailPassword(formData);
-        // Middleware will handle redirection after successful login
+        result = await signInWithEmailPassword(formData);
       }
+
+      if (result?.error) {
+        setMessage({ type: "error", text: result.error });
+      } else if (isSignUp) {
+        setMessage({ type: "success", text: "Conta em validação! Verifique seu e-mail se necessário ou tente entrar após alguns minutos." });
+      }
+      // If sign in is successful with no error, redirect will be handled by revalidatePath / middleware
     } catch (err: unknown) {
       const error = err as Error;
       setMessage({ type: "error", text: error.message || "Erro na autenticação" });
@@ -129,5 +137,17 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className={styles.landing} style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div className="animate-pulse text-tertiary">Preparando...</div>
+      </div>
+    }>
+      <LoginContent />
+    </Suspense>
   );
 }

@@ -80,9 +80,10 @@ export async function signInWithEmailPassword(formData: FormData) {
     password,
   });
 
-  if (error) throw error;
+  if (error) return { error: error.message };
 
   revalidatePath("/", "layout");
+  return { success: true };
 }
 
 /**
@@ -101,9 +102,10 @@ export async function signUpWithEmailPassword(formData: FormData) {
     },
   });
 
-  if (error) throw error;
+  if (error) return { error: error.message };
 
   revalidatePath("/", "layout");
+  return { success: true };
 }
 
 /**
