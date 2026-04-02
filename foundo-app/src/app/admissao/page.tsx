@@ -57,6 +57,7 @@ const CITIES = [
 const TOTAL_STEPS = 6;
 
 export default function AdmissaoPage() {
+  const [mounted, setMounted] = useState(false);
   const [step, setStep] = useState(1);
   const [form, setForm] = useState<Partial<AdmissionFormData>>({
     expertise_areas: [],
@@ -65,6 +66,11 @@ export default function AdmissaoPage() {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+
+  // Fix hydration mismatch by only rendering after mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   function updateField<K extends keyof AdmissionFormData>(
     key: K,
@@ -117,6 +123,14 @@ export default function AdmissaoPage() {
     }
   };
   const back = () => setStep((s) => Math.max(s - 1, 1));
+
+  if (!mounted) {
+    return (
+      <div className={styles.admissao} style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div className="animate-pulse text-tertiary">Carregando formulário...</div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.admissao}>
