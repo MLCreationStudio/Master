@@ -1,0 +1,291 @@
+.admissao {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  padding: var(--space-lg) 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.headerInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.03em;
+  text-decoration: none;
+}
+.logoAccent {
+  color: var(--accent-primary);
+}
+
+.stepInfo {
+  font-size: var(--font-size-sm);
+  color: var(--text-tertiary);
+}
+
+/* ── Stepper Bar ──────────────────────────────────────────── */
+.stepperBar {
+  display: flex;
+  gap: 4px;
+  padding: var(--space-lg) 0 0;
+}
+
+.stepperSegment {
+  flex: 1;
+  height: 3px;
+  border-radius: var(--radius-full);
+  background: var(--border-subtle);
+  transition: background var(--transition-base);
+}
+.stepperSegment.active {
+  background: var(--accent-primary);
+}
+.stepperSegment.completed {
+  background: var(--status-success);
+}
+
+/* ── Content ──────────────────────────────────────────────── */
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--space-3xl) 0;
+  max-width: 560px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.stepTitle {
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: var(--space-sm);
+}
+
+.stepSubtitle {
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2xl);
+  line-height: 1.6;
+}
+
+/* ── Role Selection (Step 1) ──────────────────────────────── */
+.roleGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+.roleCard {
+  padding: var(--space-xl);
+  background: var(--bg-card);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-align: center;
+}
+.roleCard:hover {
+  border-color: var(--border-hover);
+  background: var(--bg-card-hover);
+  transform: translateY(-2px);
+}
+.roleCard.selected {
+  border-color: var(--accent-primary);
+  background: var(--accent-primary-muted);
+}
+
+.roleIcon {
+  font-size: 40px;
+  margin-bottom: var(--space-md);
+}
+
+.roleTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  margin-bottom: var(--space-xs);
+}
+
+.roleDesc {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ── Form Fields ──────────────────────────────────────────── */
+.formGroup {
+  margin-bottom: var(--space-lg);
+}
+
+.fieldRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+/* ── Select Options (radio-style) ─────────────────────────── */
+.optionGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.optionCard {
+  padding: 14px var(--space-md);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+.optionCard:hover {
+  border-color: var(--border-hover);
+}
+.optionCard.selected {
+  border-color: var(--accent-primary);
+  background: var(--accent-primary-muted);
+}
+
+.optionRadio {
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--border-default);
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+  position: relative;
+}
+.optionCard.selected .optionRadio {
+  border-color: var(--accent-primary);
+}
+.optionCard.selected .optionRadio::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 8px;
+  height: 8px;
+  background: var(--accent-primary);
+  border-radius: var(--radius-full);
+}
+
+.optionLabel {
+  font-size: var(--font-size-base);
+  font-weight: 500;
+}
+
+/* ── Multi-Select Chips ───────────────────────────────────── */
+.chipGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.chip {
+  padding: 8px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+.chip:hover {
+  border-color: var(--border-hover);
+}
+.chip.selected {
+  background: var(--accent-primary-muted);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+/* ── Navigation ───────────────────────────────────────────── */
+.navButtons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--space-2xl);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* ── Waiting Screen ───────────────────────────────────────── */
+.waitingScreen {
+  text-align: center;
+  padding: var(--space-4xl) 0;
+}
+
+.waitingIcon {
+  font-size: 64px;
+  margin-bottom: var(--space-xl);
+  animation: pulse-glow 2s ease infinite;
+  display: inline-block;
+}
+
+.waitingTitle {
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  margin-bottom: var(--space-md);
+}
+
+.waitingDesc {
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+  max-width: 400px;
+  margin: 0 auto var(--space-xl);
+  line-height: 1.7;
+}
+
+.waitingSteps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  max-width: 360px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.waitingStep {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.waitingStepIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: var(--accent-primary-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .roleGrid {
+    grid-template-columns: 1fr;
+  }
+  .fieldRow {
+    grid-template-columns: 1fr;
+  }
+  .content {
+    padding: var(--space-xl) 0;
+  }
+}

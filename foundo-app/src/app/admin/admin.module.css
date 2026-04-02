@@ -1,0 +1,234 @@
+.adminPage {
+  padding: var(--space-2xl);
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.adminTitle {
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: var(--space-2xl);
+}
+
+/* ── Metrics ──────────────────────────────────────────────── */
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-md);
+  margin-bottom: var(--space-2xl);
+}
+
+.metricCard {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  transition: all var(--transition-fast);
+}
+.metricCard:hover {
+  border-color: var(--border-hover);
+}
+
+.metricValue {
+  font-size: var(--font-size-3xl);
+  font-weight: 800;
+  color: var(--accent-primary);
+  letter-spacing: -0.03em;
+}
+
+.metricLabel {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-top: var(--space-xs);
+}
+
+/* ── Tabs ─────────────────────────────────────────────────── */
+.tabs {
+  display: flex;
+  gap: var(--space-xs);
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: var(--space-xl);
+}
+
+.tab {
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-tertiary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all var(--transition-fast);
+  margin-bottom: -1px;
+}
+.tab:hover {
+  color: var(--text-primary);
+}
+.tab.active {
+  color: var(--accent-primary);
+  border-bottom-color: var(--accent-primary);
+}
+
+/* ── Queue ────────────────────────────────────────────────── */
+.queueList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.queueItem {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-lg);
+  transition: all var(--transition-fast);
+}
+.queueItem:hover {
+  border-color: var(--border-hover);
+}
+
+.queueAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  background: var(--bg-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.queueInfo {
+  flex: 1;
+}
+
+.queueName {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  margin-bottom: var(--space-xs);
+}
+
+.queueMeta {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  display: flex;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+}
+
+.queueProject {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.queueActions {
+  display: flex;
+  gap: var(--space-sm);
+  flex-shrink: 0;
+}
+
+.queueBtn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.approveBtn {
+  background: rgba(52, 211, 153, 0.15);
+  color: var(--status-success);
+}
+.approveBtn:hover {
+  background: rgba(52, 211, 153, 0.25);
+}
+
+.rejectBtn {
+  background: rgba(248, 113, 113, 0.15);
+  color: var(--status-error);
+}
+.rejectBtn:hover {
+  background: rgba(248, 113, 113, 0.25);
+}
+
+.infoBtn {
+  background: rgba(96, 165, 250, 0.15);
+  color: var(--status-info);
+}
+.infoBtn:hover {
+  background: rgba(96, 165, 250, 0.25);
+}
+
+/* ── Match Map ────────────────────────────────────────────── */
+.matchMap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.matchRow {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md) var(--space-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.matchNames {
+  flex: 1;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.matchDate {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+}
+
+.matchStatus {
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+}
+
+.matchStatusGreen {
+  background: rgba(52, 211, 153, 0.15);
+  color: var(--status-success);
+}
+
+.matchStatusYellow {
+  background: rgba(251, 191, 36, 0.15);
+  color: var(--status-warning);
+}
+
+.matchStatusRed {
+  background: rgba(248, 113, 113, 0.15);
+  color: var(--status-error);
+}
+
+@media (max-width: 768px) {
+  .metricsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .queueItem {
+    flex-direction: column;
+  }
+  .queueActions {
+    width: 100%;
+  }
+  .queueBtn {
+    flex: 1;
+  }
+}
