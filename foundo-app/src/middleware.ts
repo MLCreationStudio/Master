@@ -75,7 +75,7 @@ export async function middleware(request: NextRequest) {
     }
 
     // Admin Protection
-    if (isAdminRoute && user.email !== "matheus@mlcreationstudio.com") {
+    if (isAdminRoute && user.email !== "matheuslucenastudio@gmail.com") {
       return NextResponse.redirect(new URL("/deck", request.url));
     }
   }
