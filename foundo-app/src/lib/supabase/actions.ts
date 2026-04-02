@@ -34,7 +34,7 @@ export async function submitAdmission(formData: AdmissionFormData) {
       contact_preference: "email",    // Defaulting for MVP
     });
 
-  if (userError) throw userError;
+  if (userError) return { error: userError.message };
 
   // 2. Create Project
   const { error: projectError } = await supabase
@@ -47,7 +47,7 @@ export async function submitAdmission(formData: AdmissionFormData) {
       evidence: formData.evidence || null,
     });
 
-  if (projectError) throw projectError;
+  if (projectError) return { error: projectError.message };
 
   // 3. Create Seeking profile
   const { error: seekingError } = await supabase
@@ -62,10 +62,11 @@ export async function submitAdmission(formData: AdmissionFormData) {
       proof_of_work_url: formData.proof_of_work_url || null,
     });
 
-  if (seekingError) throw seekingError;
+  if (seekingError) return { error: seekingError.message };
 
   revalidatePath("/admissao");
   revalidatePath("/admin");
+  return { success: true };
 }
 
 /**

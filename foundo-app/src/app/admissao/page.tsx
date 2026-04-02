@@ -99,13 +99,18 @@ export default function AdmissaoPage() {
     }
   };
 
-  const handleSubmit = async () => {
+    const handleSubmit = async () => {
     setIsSubmitting(true);
     setSubmitError(null);
     try {
-      await submitAdmission(form as AdmissionFormData);
-      setSubmitted(true);
-      setStep(6);
+      const result = await submitAdmission(form as AdmissionFormData) as { error?: string; success?: boolean };
+      
+      if (result?.error) {
+        setSubmitError(result.error);
+      } else {
+        setSubmitted(true);
+        setStep(6);
+      }
     } catch (err: unknown) {
       console.error("Error submitting admission:", err);
       const message = err instanceof Error ? err.message : "Ocorreu um erro ao enviar sua admissão.";
