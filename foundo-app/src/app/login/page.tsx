@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import styles from "../page.module.css";
 import loginStyles from "./login.module.css";
@@ -8,11 +8,16 @@ import loginStyles from "./login.module.css";
 import { signInWithEmailPassword, signUpWithEmailPassword } from "@/lib/supabase/actions";
 
 export default function LoginPage() {
+  const [mounted, setMounted] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,6 +43,14 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
+  if (!mounted) {
+    return (
+      <div className={styles.landing} style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div className="animate-pulse text-tertiary">Carregando acesso...</div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.landing}>
