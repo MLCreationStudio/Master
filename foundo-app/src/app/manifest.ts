@@ -2,10 +2,10 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Foundo",
-    short_name: "Foundo",
+    name: "Clip App",
+    short_name: "Clip",
     description:
-      "A plataforma onde founders e devs brasileiros se encontram com segurança para construir juntos.",
+      "Founders encontram Builders de elite",
     start_url: "/",
     display: "standalone",
     background_color: "#13131A",

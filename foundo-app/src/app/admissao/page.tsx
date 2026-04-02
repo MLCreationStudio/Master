@@ -13,6 +13,18 @@ import type {
 } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import { submitAdmission, getUserProfile } from "@/lib/supabase/actions";
+import { 
+  Rocket, 
+  Zap, 
+  CheckCircle2, 
+  Clock, 
+  Mail, 
+  ArrowLeft, 
+  ArrowRight,
+  ClipboardCheck,
+  Building2,
+  Construction
+} from "lucide-react";
 
 const STAGES: { value: ProjectStage; label: string }[] = [
   { value: "exploration", label: "Exploração — validando ideia" },
@@ -162,7 +174,7 @@ export default function AdmissaoPage() {
         <div className="container">
           <div className={styles.headerInner}>
             <Link href="/" className={styles.logo}>
-              found<span className={styles.logoAccent}>o</span>
+              clip
             </Link>
             {step <= 5 && (
               <span className={styles.stepInfo}>
@@ -197,11 +209,11 @@ export default function AdmissaoPage() {
 
               <div className={styles.roleGrid}>
                 <div
-                  className={`${styles.roleCard} ${form.role === "founder" ? styles.selected : ""}`}
+                  className={`${styles.roleCard} ${form.role === "founder" ? styles.selected : ""} glass`}
                   onClick={() => updateField("role", "founder")}
                   id="role-founder"
                 >
-                  <div className={styles.roleIcon}>🚀</div>
+                  <div className={styles.roleIcon}><Building2 size={32} /></div>
                   <h3 className={styles.roleTitle}>Founder</h3>
                   <p className={styles.roleDesc}>
                     Tenho visão de negócio e preciso de um parceiro técnico para construir
@@ -209,11 +221,11 @@ export default function AdmissaoPage() {
                 </div>
 
                 <div
-                  className={`${styles.roleCard} ${form.role === "builder" ? styles.selected : ""}`}
+                  className={`${styles.roleCard} ${form.role === "builder" ? styles.selected : ""} glass`}
                   onClick={() => updateField("role", "builder")}
                   id="role-builder"
                 >
-                  <div className={styles.roleIcon}>⚡</div>
+                  <div className={styles.roleIcon}><Construction size={32} /></div>
                   <h3 className={styles.roleTitle}>Construtor técnico</h3>
                   <p className={styles.roleDesc}>
                     Tenho capacidade técnica e quero um parceiro com visão de negócio
@@ -236,7 +248,7 @@ export default function AdmissaoPage() {
                 <input
                   type="text"
                   className="input"
-                  placeholder="Ex: Foundo"
+                  placeholder="Ex: Clip"
                   maxLength={40}
                   value={form.project_name || ""}
                   onChange={(e) => updateField("project_name", e.target.value)}
@@ -487,24 +499,23 @@ export default function AdmissaoPage() {
           {/* ── Step 6: Waiting ──────────────────────────────── */}
           {step === 6 && submitted && (
             <div className={`${styles.waitingScreen} animate-fade-in-up`}>
-              <div className={styles.waitingIcon}>🔥</div>
-              <h2 className={styles.waitingTitle}>Sua admissão foi enviada</h2>
-              <p className={styles.waitingDesc}>
-                Cada perfil é revisado pessoalmente. Você receberá um retorno
-                por email em até 48 horas.
+              <div className={styles.logo}>clip</div>
+              <h1 className={styles.title}>Sua admissão foi enviada</h1>
+              <p className={styles.subtitle}>
+                Cada perfil é revisado pessoalmente. Você receberá um retorno por e-mail em até 48 horas.
               </p>
 
               <div className={styles.waitingSteps}>
                 <div className={styles.waitingStep}>
-                  <div className={styles.waitingStepIcon}>✓</div>
+                  <div className={styles.waitingStepIcon}><CheckCircle2 size={18} className="text-status-success" /></div>
                   <span>Perfil enviado com sucesso</span>
                 </div>
                 <div className={styles.waitingStep}>
-                  <div className={styles.waitingStepIcon}>⏳</div>
+                  <div className={styles.waitingStepIcon}><Clock size={18} className="text-accent" /></div>
                   <span>Revisão manual em até 48h</span>
                 </div>
                 <div className={styles.waitingStep}>
-                  <div className={styles.waitingStepIcon}>📧</div>
+                  <div className={styles.waitingStepIcon}><Mail size={18} className="text-secondary" /></div>
                   <span>Resultado enviado por email</span>
                 </div>
               </div>
@@ -527,19 +538,19 @@ export default function AdmissaoPage() {
                   id="btn-back"
                   disabled={isSubmitting}
                 >
-                  ← Voltar
+                  <ArrowLeft size={16} /> Voltar
                 </button>
               ) : (
                 <div />
               )}
-              <button
-                className="btn btn-primary"
-                onClick={next}
-                disabled={!canAdvance() || isSubmitting}
-                id="btn-next"
-              >
-                {isSubmitting ? "Enviando..." : step === 5 ? "Enviar admissão" : "Continuar →"}
-              </button>
+                <button
+                  className="btn btn-primary"
+                  onClick={next}
+                  disabled={!canAdvance() || isSubmitting}
+                  id="btn-next"
+                >
+                  {isSubmitting ? "Enviando..." : step === 5 ? "Enviar admissão" : <>Continuar <ArrowRight size={16} /></>}
+                </button>
             </div>
           )}
         </div>

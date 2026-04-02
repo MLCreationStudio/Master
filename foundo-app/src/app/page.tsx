@@ -3,6 +3,19 @@
 import { useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { 
+  Zap, 
+  Shield, 
+  Target, 
+  Users, 
+  MessageSquare, 
+  Settings, 
+  Rocket, 
+  ArrowRight,
+  ChevronRight,
+  Search,
+  CheckCircle2
+} from "lucide-react";
 import styles from "./page.module.css";
 
 export default function LandingPage() {
@@ -46,7 +59,7 @@ export default function LandingPage() {
         {/* Nav */}
         <nav className={styles.nav}>
           <div className={styles.logo}>
-            found<span className={styles.logoAccent}>o</span>
+            clip
           </div>
           <div className="flex items-center gap-4">
             <Link href="/login?mode=login" className="btn btn-ghost btn-sm">
@@ -60,13 +73,13 @@ export default function LandingPage() {
 
         {/* Hero */}
         <section className={styles.hero}>
-          <div className={styles.heroTag}>
-            🔥 Matchmaking curado para co-fundação
+          <div className={`${styles.heroTag} glass`}>
+            <Zap size={14} className="text-accent" />
+            Matchmaking curado para co-fundação
           </div>
 
           <h1 className={styles.heroTitle}>
-            Onde founders e devs se encontram para{" "}
-            <span className="text-accent">construir juntos</span>
+            Onde Founders encontram <br /> <span className="text-gradient">Builders de elite</span>
           </h1>
 
           <p className={styles.heroSubtitle}>
@@ -97,11 +110,11 @@ export default function LandingPage() {
                 </button>
               </form>
               <div style={{ marginTop: "var(--space-md)", textAlign: "center" }}>
-                 <p className="text-sm text-tertiary">
+                 <p className="text-tertiary">
                    Já tem conta?{" "}
-                   <Link href="/login?mode=login" className="text-accent hover:underline">
-                     Entrar aqui
-                   </Link>
+                    <Link href="/login?mode=login" className="text-accent hover:underline">
+                      Entrar aqui
+                    </Link>
                  </p>
               </div>
               {error && (
@@ -112,17 +125,15 @@ export default function LandingPage() {
             </div>
           ) : (
             <p className={styles.waitlistSuccess}>
-              ✓ Você está na lista! Entraremos em contato em breve.
+              <CheckCircle2 size={20} className="text-status-success" /> Você está na lista! Entraremos em contato em breve.
             </p>
           )}
 
           <div className={styles.socialProof}>
             <div className={styles.avatarStack}>
-              <span>👨‍💻</span>
-              <span>👩‍💼</span>
-              <span>🧑‍🔬</span>
-              <span>👨‍🎨</span>
-              <span>👩‍💻</span>
+              <div className={styles.avatarMini}><Users size={12} /></div>
+              <div className={styles.avatarMini}><Target size={12} /></div>
+              <div className={styles.avatarMini}><Rocket size={12} /></div>
             </div>
             <p className={styles.socialText}>
               <span className={styles.socialTextHighlight}>50+ founders e devs</span>{" "}
@@ -174,15 +185,15 @@ export default function LandingPage() {
         {/* Differentiators */}
         <section className={styles.section}>
           <div className="text-center">
-            <span className={styles.sectionLabel}>Por que Foundo</span>
+            <span className={styles.sectionLabel}>Por que Clip</span>
             <h2 className={styles.sectionTitle}>
               Construído para quem leva a sério
             </h2>
           </div>
 
           <div className={styles.diffGrid}>
-            <div className={styles.diffCard}>
-              <div className={styles.diffIcon}>🛡️</div>
+            <div className={`${styles.diffCard} glass`}>
+              <div className={styles.diffIcon}><Shield size={24} /></div>
               <div>
                 <h4 className={styles.diffTitle}>Admissão manual</h4>
                 <p className={styles.diffDesc}>
@@ -192,8 +203,8 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className={styles.diffCard}>
-              <div className={styles.diffIcon}>🎯</div>
+            <div className={`${styles.diffCard} glass`}>
+              <div className={styles.diffIcon}><Target size={24} /></div>
               <div>
                 <h4 className={styles.diffTitle}>Foco exclusivo</h4>
                 <p className={styles.diffDesc}>
@@ -202,8 +213,8 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className={styles.diffCard}>
-              <div className={styles.diffIcon}>🤝</div>
+            <div className={`${styles.diffCard} glass`}>
+              <div className={styles.diffIcon}><Users size={24} /></div>
               <div>
                 <h4 className={styles.diffTitle}>Match bilateral</h4>
                 <p className={styles.diffDesc}>
@@ -213,8 +224,8 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className={styles.diffCard}>
-              <div className={styles.diffIcon}>💬</div>
+            <div className={`${styles.diffCard} glass`}>
+              <div className={styles.diffIcon}><MessageSquare size={24} /></div>
               <div>
                 <h4 className={styles.diffTitle}>Chat com contexto</h4>
                 <p className={styles.diffDesc}>
@@ -236,7 +247,7 @@ export default function LandingPage() {
             projetos concretos e contribuição verificável.
           </p>
           <Link href="/login?mode=signup" className="btn btn-primary btn-lg">
-            Quero participar →
+            Quero participar <ArrowRight size={20} />
           </Link>
         </section>
 
@@ -244,7 +255,7 @@ export default function LandingPage() {
         <footer className={styles.footer}>
           <div className="flex flex-col md:flex-row justify-between items-center w-full gap-4">
             <p className={styles.footerText}>
-              © 2026 Foundo · ML Creation Studio
+              © 2026 Clip · ML Creation Studio
             </p>
             <div className={styles.footerLinks}>
               <Link href="#">Termos</Link>
@@ -252,7 +263,7 @@ export default function LandingPage() {
               <Link href="#">Contato</Link>
               {/* Secret Admin Link */}
               <Link href="/admin" className="opacity-50 hover:opacity-100 transition-opacity">
-                Admin ⚙️
+                Admin <Settings size={14} />
               </Link>
             </div>
           </div>

@@ -1,5 +1,5 @@
 /* ============================================================
-   FOUNDO — Design System
+   Clip — Design System
    "Dark Quente" — Premium, acolhedor, sem ruído.
    Inspiração: Raycast, Arc Browser, Linear
    ============================================================ */
@@ -8,33 +8,33 @@
 
 /* ── Design Tokens ──────────────────────────────────────────── */
 :root {
-  /* Backgrounds — dark com subtom quente */
-  --bg-primary: #13131A;
-  --bg-secondary: #1A1A24;
-  --bg-tertiary: #22222E;
-  --bg-card: #1E1E2A;
-  --bg-card-hover: #252533;
-  --bg-input: #1A1A24;
-  --bg-overlay: rgba(19, 19, 26, 0.85);
+  /* Backgrounds — Ultra Dark Tech */
+  --bg-primary: #0B0C10;
+  --bg-secondary: #0F111A;
+  --bg-tertiary: #161821;
+  --bg-card: #14151F;
+  --bg-card-hover: #1C1E2A;
+  --bg-input: #0F111A;
+  --bg-overlay: rgba(11, 12, 16, 0.8);
 
-  /* Accent — laranja-âmbar queimado */
-  --accent-primary: #E8632A;
-  --accent-primary-hover: #F07540;
-  --accent-primary-muted: rgba(232, 99, 42, 0.15);
-  --accent-primary-glow: rgba(232, 99, 42, 0.25);
-  --accent-secondary: #D4A853;
+  /* Accent — Indigo & Cyan (Clip) */
+  --accent-primary: #6366F1;
+  --accent-primary-hover: #818CF8;
+  --accent-primary-muted: rgba(99, 102, 241, 0.15);
+  --accent-primary-glow: rgba(99, 102, 241, 0.25);
+  --accent-secondary: #0EA5E9;
 
   /* Text */
-  --text-primary: #F0EDE8;
-  --text-secondary: #9B9AAD;
-  --text-tertiary: #6B6A7A;
-  --text-inverse: #13131A;
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-tertiary: #64748B;
+  --text-inverse: #0B0C10;
 
   /* Borders */
-  --border-subtle: rgba(255, 255, 255, 0.06);
-  --border-default: rgba(255, 255, 255, 0.1);
-  --border-hover: rgba(255, 255, 255, 0.15);
-  --border-accent: rgba(232, 99, 42, 0.4);
+  --border-subtle: rgba(255, 255, 255, 0.04);
+  --border-default: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.12);
+  --border-accent: rgba(99, 102, 241, 0.4);
 
   /* Status */
   --status-success: #34D399;
@@ -282,7 +282,7 @@ p {
   resize: vertical;
 }
 
-/* ── Cards ──────────────────────────────────────────────────── */
+/* ── Cards & Glassmorphism ──────────────────────────────────── */
 .card {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
@@ -293,9 +293,23 @@ p {
 .card:hover {
   border-color: var(--border-hover);
   background: var(--bg-card-hover);
+  transform: translateY(-2px);
 }
-.card-elevated {
-  box-shadow: var(--shadow-md);
+
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-card {
+  background: rgba(30, 30, 42, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-lg);
 }
 
 /* ── Tags / Badges ──────────────────────────────────────────── */

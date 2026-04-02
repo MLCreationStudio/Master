@@ -8,6 +8,18 @@ import {
   getAdminMatches,
   getAdminActivity
 } from "@/lib/supabase/actions";
+import { 
+  Users, 
+  CheckCircle2, 
+  XCircle, 
+  Flame, 
+  Zap, 
+  Rocket, 
+  Activity, 
+  TrendingUp,
+  Search,
+  ExternalLink
+} from "lucide-react";
 import styles from "./admin.module.css";
 import type { UserStatus } from "@/lib/types";
 
@@ -81,21 +93,21 @@ export default function AdminPage() {
 
       {/* Metrics */}
       <div className={styles.metricsGrid}>
-        <div className={styles.metricCard}>
+        <div className={`${styles.metricCard} glass`}>
           <div className={styles.metricValue}>{metrics.activeUsers}</div>
-          <div className={styles.metricLabel}>Usuários ativos</div>
+          <div className={styles.metricLabel}><Users size={14} /> Usuários ativos</div>
         </div>
-        <div className={styles.metricCard}>
+        <div className={`${styles.metricCard} glass`}>
           <div className={styles.metricValue}>{metrics.totalMatches}</div>
-          <div className={styles.metricLabel}>Matches realizados</div>
+          <div className={styles.metricLabel}><Flame size={14} /> Matches realizados</div>
         </div>
-        <div className={styles.metricCard}>
+        <div className={`${styles.metricCard} glass`}>
           <div className={styles.metricValue}>{metrics.conversationsStarted}</div>
-          <div className={styles.metricLabel}>Conversas ativas</div>
+          <div className={styles.metricLabel}><Activity size={14} /> Conversas ativas</div>
         </div>
-        <div className={styles.metricCard}>
+        <div className={`${styles.metricCard} glass`}>
           <div className={styles.metricValue}>{metrics.successStories}</div>
-          <div className={styles.metricLabel}>Projetos c/ Tração</div>
+          <div className={styles.metricLabel}><TrendingUp size={14} /> Projetos c/ Tração</div>
         </div>
       </div>
 
@@ -130,8 +142,8 @@ export default function AdminPage() {
           ) : (
             pendingApps.map((item) => (
               <div key={item.id} className={styles.queueItem}>
-                <div className={styles.queueAvatar}>
-                  {item.role === "founder" ? "🚀" : "⚡"}
+                <div className={`${styles.queueAvatar} glass`}>
+                  {item.role === "founder" ? <Rocket size={18} /> : <Zap size={18} />}
                 </div>
                 <div className={styles.queueInfo}>
                   <div className={styles.queueName}>{item.name}</div>
@@ -154,10 +166,10 @@ export default function AdminPage() {
                   )}
                   <div style={{ marginTop: "8px", display: "flex", gap: "12px", fontSize: "12px" }}>
                     {item.linkedin_url && (
-                        <a href={item.linkedin_url} target="_blank" className="text-accent">LinkedIn ↗</a>
+                        <a href={item.linkedin_url} target="_blank" className="text-accent flex items-center gap-1">LinkedIn <ExternalLink size={12} /></a>
                     )}
                     {item.github_url && (
-                        <a href={item.github_url} target="_blank" className="text-accent">GitHub ↗</a>
+                        <a href={item.github_url} target="_blank" className="text-accent flex items-center gap-1">GitHub <ExternalLink size={12} /></a>
                     )}
                   </div>
                 </div>
@@ -166,13 +178,13 @@ export default function AdminPage() {
                     className={`${styles.queueBtn} ${styles.approveBtn}`}
                     onClick={() => handleStatusUpdate(item.id, "active")}
                   >
-                    ✓ Aprovar
+                    <CheckCircle2 size={16} /> Aprovar
                   </button>
                   <button
                     className={`${styles.queueBtn} ${styles.rejectBtn}`}
                     onClick={() => handleStatusUpdate(item.id, "rejected")}
                   >
-                    ✕ Reprovar
+                    <XCircle size={16} /> Reprovar
                   </button>
                 </div>
               </div>
@@ -192,8 +204,8 @@ export default function AdminPage() {
             matches.map((match) => (
               <div key={match.id} className={styles.queueItem} style={{ alignItems: "center" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                  <div className={styles.queueAvatar} style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}>
-                    {match.user_a.role === 'founder' ? '🚀' : '⚡'}
+                  <div className={`${styles.queueAvatar} glass`} style={{ border: "1px solid var(--border-subtle)" }}>
+                    {match.user_a.role === 'founder' ? <Rocket size={16} /> : <Zap size={16} />}
                   </div>
                   <div>
                     <div className={styles.queueName}>{match.user_a.name}</div>
@@ -201,15 +213,17 @@ export default function AdminPage() {
                   </div>
                 </div>
 
-                <div style={{ color: "var(--accent-primary)", fontWeight: "bold" }}>MATCH 🔥</div>
+                <div style={{ color: "var(--accent-primary)", fontWeight: "bold", display: "flex", alignItems: "center", gap: "4px" }}>
+                  MATCH <Flame size={16} />
+                </div>
 
                 <div style={{ display: "flex", alignItems: "center", gap: "12px", textAlign: "right" }}>
                   <div>
                     <div className={styles.queueName}>{match.user_b.name}</div>
                     <div className="text-tertiary" style={{ fontSize: "12px" }}>{match.user_b.role}</div>
                   </div>
-                  <div className={styles.queueAvatar} style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}>
-                    {match.user_b.role === 'founder' ? '🚀' : '⚡'}
+                  <div className={`${styles.queueAvatar} glass`} style={{ border: "1px solid var(--border-subtle)" }}>
+                    {match.user_b.role === 'founder' ? <Rocket size={16} /> : <Zap size={16} />}
                   </div>
                 </div>
               </div>

@@ -5,6 +5,16 @@ import { useSearchParams } from "next/navigation";
 import styles from "./chat.module.css";
 import { createClient } from "@/lib/supabase/client";
 import { getConversations, getMessages, sendMessage } from "@/lib/supabase/actions";
+import { 
+  MessageSquare, 
+  Send, 
+  Rocket, 
+  Zap, 
+  Search, 
+  MoreVertical,
+  Check,
+  CheckCheck
+} from "lucide-react";
 
 function ChatContent() {
   const searchParams = useSearchParams();
@@ -112,7 +122,7 @@ function ChatContent() {
   return (
     <div className={styles.chatPage}>
       {/* Conversation List */}
-      <div className={styles.convList}>
+      <div className={`${styles.convList} glass`}>
         <div className={styles.convHeader}>
           <h2 className={styles.convTitle}>Conversas</h2>
         </div>
@@ -128,8 +138,8 @@ function ChatContent() {
                 className={`${styles.convItem} ${activeConv === conv.id ? styles.active : ""}`}
                 onClick={() => setActiveConv(conv.id)}
               >
-                <div className={styles.convAvatar}>
-                  {conv.otherUser.role === "founder" ? "🚀" : "⚡"}
+                <div className={`${styles.convAvatar} glass`}>
+                  {conv.otherUser.role === "founder" ? <Rocket size={16} /> : <Zap size={16} />}
                 </div>
                 <div className={styles.convInfo}>
                   <div className={styles.convName}>{conv.otherUser.name}</div>
@@ -150,9 +160,9 @@ function ChatContent() {
       {/* Chat Window */}
       {currentConvData ? (
         <div className={styles.chatWindow}>
-          <div className={styles.chatHeader}>
-            <div className={styles.convAvatar}>
-              {currentConvData.otherUser.role === "founder" ? "🚀" : "⚡"}
+          <div className={`${styles.chatHeader} glass`}>
+            <div className={`${styles.convAvatar} glass`}>
+              {currentConvData.otherUser.role === "founder" ? <Rocket size={18} /> : <Zap size={18} />}
             </div>
             <div>
               <div className={styles.chatHeaderName}>{currentConvData.otherUser.name}</div>
@@ -204,13 +214,13 @@ function ChatContent() {
               autoComplete="off"
             />
             <button type="submit" className={styles.chatSendBtn} id="chat-send">
-              Enviar
+              <Send size={18} />
             </button>
           </form>
         </div>
       ) : (
         <div className={styles.chatEmpty}>
-          <div className={styles.chatEmptyIcon}>💬</div>
+          <div className={styles.chatEmptyIcon}><MessageSquare size={48} className="text-tertiary" /></div>
           <p>
             {conversations.length > 0 
               ? "Selecione uma conversa" 

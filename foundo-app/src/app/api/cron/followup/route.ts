@@ -66,17 +66,17 @@ export async function GET(request: Request) {
         // A. Send Emails via Resend
         // Email for User A
         await resend.emails.send({
-          from: "Foundo <onboarding@resend.dev>",
+          from: "Clip <onboarding@resend.dev>",
           to: match.user_a.email,
-          subject: "E aí, como vai o match no Foundo?",
+          subject: "Como vai o match no Clip?",
           html: `<p>Olá ${match.user_a.name}, faz uma semana que você deu match com ${match.user_b.name}.</p><p>Como estão as conversas? Estão construindo algo legal?</p>`
         });
 
         // Email for User B
         await resend.emails.send({
-          from: "Foundo <onboarding@resend.dev>",
+          from: "Clip <onboarding@resend.dev>",
           to: match.user_b.email,
-          subject: "E aí, como vai o match no Foundo?",
+          subject: "Como vai o match no Clip?",
           html: `<p>Olá ${match.user_b.name}, faz uma semana que você deu match com ${match.user_a.name}.</p><p>Como estão as conversas? Estão construindo algo legal?</p>`
         });
 

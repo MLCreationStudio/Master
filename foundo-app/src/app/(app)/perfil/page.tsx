@@ -1,6 +1,17 @@
-"use client";
-
 import styles from "../deck/deck.module.css";
+import { 
+  User, 
+  Building, 
+  BarChart3, 
+  Search, 
+  DollarSign, 
+  Hammer, 
+  Edit3, 
+  Check, 
+  Eye, 
+  Users,
+  Clock
+} from "lucide-react";
 
 export default function PerfilPage() {
   return (
@@ -10,9 +21,11 @@ export default function PerfilPage() {
         <p className={styles.deckSubtitle}>Gerencie suas informações e status</p>
       </div>
 
-      <div className={styles.profileCard}>
+      <div className={`${styles.profileCard} glass`}>
         <div className={styles.cardHeader}>
-          <div className={styles.cardAvatar}>👤</div>
+          <div className={`${styles.cardAvatar} glass`}>
+            <User size={24} />
+          </div>
           <div>
             <h2 className={styles.cardName}>João Silva</h2>
             <div className={styles.cardMeta}>
@@ -26,41 +39,49 @@ export default function PerfilPage() {
         <div className={styles.cardBody}>
           <div className={styles.cardDetails}>
             <div className={styles.cardDetail}>
-              <span className={styles.cardDetailIcon}>🏢</span>
+              <span className={styles.cardDetailIcon}><Building size={16} /></span>
               <span><strong>Projeto:</strong> DataPipe — Backup automatizado para PMEs</span>
             </div>
             <div className={styles.cardDetail}>
-              <span className={styles.cardDetailIcon}>📊</span>
+              <span className={styles.cardDetailIcon}><BarChart3 size={16} /></span>
               <span><strong>Estágio:</strong> </span>
               <span className="tag tag-stage-exploration">Exploração</span>
             </div>
             <div className={styles.cardDetail}>
-              <span className={styles.cardDetailIcon}>🔍</span>
+              <span className={styles.cardDetailIcon}><Search size={16} /></span>
               <span><strong>Busca:</strong> Vendas, Operações/Finanças</span>
             </div>
             <div className={styles.cardDetail}>
-              <span className={styles.cardDetailIcon}>💰</span>
+              <span className={styles.cardDetailIcon}><DollarSign size={16} /></span>
               <span><strong>Expectativa:</strong> Equity puro</span>
             </div>
             <div className={styles.cardDetail}>
-              <span className={styles.cardDetailIcon}>🛠️</span>
+              <span className={styles.cardDetailIcon}><Hammer size={16} /></span>
               <span><strong>Oferece:</strong> Full-stack senior, 6 anos em infra cloud, ex-AWS</span>
             </div>
           </div>
         </div>
 
         <div className={styles.cardActions}>
-          <button className="btn btn-secondary w-full">✏️ Editar perfil</button>
+          <button className="btn btn-secondary w-full">
+            <Edit3 size={18} /> Editar perfil
+          </button>
         </div>
       </div>
 
       {/* Status Control */}
       <div style={{ marginTop: "24px" }}>
         <label className="input-label">Seu status atual</label>
-        <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
-          <button className="btn btn-primary btn-sm">🟢 Buscando ativamente</button>
-          <button className="btn btn-secondary btn-sm">👀 Observando</button>
-          <button className="btn btn-secondary btn-sm">🤝 Em parceria</button>
+        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "8px" }}>
+          <button className="btn btn-primary btn-sm flex items-center gap-1">
+            <Check size={14} /> Buscando ativamente
+          </button>
+          <button className="btn btn-secondary btn-sm flex items-center gap-1 glass">
+            <Eye size={14} /> Observando
+          </button>
+          <button className="btn btn-secondary btn-sm flex items-center gap-1 glass">
+            <Users size={14} /> Em parceria
+          </button>
         </div>
       </div>
 
@@ -70,13 +91,15 @@ export default function PerfilPage() {
         <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
           <input
             type="text"
-            className="input"
+            className="input glass"
             placeholder="O que mudou no seu projeto?"
             defaultValue="Pesquisando integrações com ERPs nacionais"
           />
           <button className="btn btn-primary btn-sm">Atualizar</button>
         </div>
-        <span className="input-hint">Última atualização: há 3 dias</span>
+        <div className="flex items-center gap-1 mt-2 text-tertiary" style={{ fontSize: "12px" }}>
+          <Clock size={12} /> Última atualização: há 3 dias
+        </div>
       </div>
     </div>
   );

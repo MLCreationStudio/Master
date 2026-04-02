@@ -2,13 +2,20 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { 
+  LayoutDashboard, 
+  Flame, 
+  MessageSquare, 
+  User,
+  LogOut
+} from "lucide-react";
 import styles from "./layout.module.css";
 
 const NAV_ITEMS = [
-  { href: "/deck", icon: "🃏", label: "Deck" },
-  { href: "/matches", icon: "🤝", label: "Matches" },
-  { href: "/chat", icon: "💬", label: "Chat", badge: 0 },
-  { href: "/perfil", icon: "👤", label: "Perfil" },
+  { href: "/deck", icon: <LayoutDashboard size={20} />, label: "Deck" },
+  { href: "/matches", icon: <Flame size={20} />, label: "Matches" },
+  { href: "/chat", icon: <MessageSquare size={20} />, label: "Chat", badge: 0 },
+  { href: "/perfil", icon: <User size={20} />, label: "Perfil" },
 ];
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
@@ -18,7 +25,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <div className={styles.appLayout}>
       <aside className={styles.sidebar}>
         <Link href="/deck" className={styles.sidebarLogo}>
-          found<span className={styles.sidebarLogoAccent}>o</span>
+          clip
         </Link>
 
         <ul className={styles.navList}>
@@ -41,7 +48,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </ul>
 
         <div className={styles.sidebarFooter}>
-          <div className={styles.userAvatar}>👤</div>
+          <div className={styles.userAvatar}><User size={20} /></div>
           <div>
             <div className={styles.userName}>Usuário</div>
             <div className={styles.userRole}>Founder</div>

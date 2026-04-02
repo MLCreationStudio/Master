@@ -10,6 +10,17 @@ import {
   getDailyInterestCount 
 } from "@/lib/supabase/actions";
 import Link from "next/link";
+import { 
+  Target, 
+  Rocket, 
+  Zap, 
+  CheckCircle2, 
+  Flame, 
+  BarChart3, 
+  Search, 
+  ArrowRight,
+  Info
+} from "lucide-react";
 
 const STAGE_LABELS: Record<ProjectStage, string> = {
   exploration: "Exploração",
@@ -102,7 +113,7 @@ export default function DeckPage() {
     return (
       <div className={styles.deckPage}>
         <div className={styles.emptyState}>
-          <div className={styles.emptyIcon}>🎯</div>
+          <div className={styles.emptyIcon}><Target size={48} className="text-tertiary" /></div>
           <h3 className={styles.emptyTitle}>Sem perfis novos por agora</h3>
           <p className={styles.emptyDesc}>
             Volte mais tarde — novos perfis aparecem conforme são aprovados.
@@ -126,10 +137,10 @@ export default function DeckPage() {
         </p>
       </div>
 
-      <div className={styles.profileCard}>
+      <div className={`${styles.profileCard} glass`}>
         <div className={styles.cardHeader}>
-          <div className={styles.cardAvatar}>
-            {profile.role === "founder" ? "🚀" : "⚡"}
+          <div className={`${styles.cardAvatar} glass`}>
+            {profile.role === "founder" ? <Rocket size={24} /> : <Zap size={24} />}
           </div>
           <div>
             <h2 className={styles.cardName}>{profile.name}</h2>
@@ -150,19 +161,19 @@ export default function DeckPage() {
 
           <div className={styles.cardDetails}>
             <div className={styles.cardDetail}>
-              <span className={styles.cardDetailIcon}>📊</span>
+              <span className={styles.cardDetailIcon}><BarChart3 size={16} /></span>
               <span>Estágio: </span>
               <span className={`tag ${STAGE_TAG_CLASS[stage]}`}>
                 {STAGE_LABELS[stage]}
               </span>
             </div>
             <div className={styles.cardDetail}>
-              <span className={styles.cardDetailIcon}>🔍</span>
+              <span className={styles.cardDetailIcon}><Search size={16} /></span>
               <span>{profile.contribution_summary}</span>
             </div>
             {profile.project_name && (
               <div className={styles.cardDetail}>
-                <span className={styles.cardDetailIcon}>✓</span>
+                <span className={styles.cardDetailIcon}><CheckCircle2 size={16} /></span>
                 <span>Projeto: <strong>{profile.project_name}</strong></span>
               </div>
             )}
@@ -199,7 +210,7 @@ export default function DeckPage() {
             disabled={interestsToday >= MAX_INTERESTS}
             id="btn-interest"
           >
-            🔥 Interesse
+            <Flame size={18} /> Interesse
           </button>
         </div>
       </div>
@@ -211,8 +222,8 @@ export default function DeckPage() {
       {/* Match Modal */}
       {matchData?.match && (
         <div className={styles.matchOverlay}>
-          <div className={`${styles.matchModal} animate-fade-in-up`}>
-            <div className={styles.matchTaco}>🔥</div>
+          <div className={`${styles.matchModal} glass animate-fade-in-up`}>
+            <div className={styles.matchTaco}><Flame size={48} className="text-accent" /></div>
             <h2 className={styles.matchTitle}>É um Match!</h2>
             <p className={styles.matchDesc}>
               Você e <strong>{profile.name}</strong> demonstraram interesse mútuo.
@@ -220,7 +231,7 @@ export default function DeckPage() {
             </p>
             <div className={styles.matchActions}>
               <Link href={`/chat?id=${matchData.conversation_id}`} className="btn btn-primary w-full">
-                Ir para o Chat →
+                Ir para o Chat <ArrowRight size={18} />
               </Link>
               <button className="btn btn-ghost w-full" onClick={closeMatchModal}>
                 Continuar no Deck

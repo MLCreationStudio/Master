@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Foundo — Onde founders e devs se encontram para construir juntos",
+  title: "Clip — Matchmaking curado para co-fundação",
   description:
-    "A plataforma de matchmaking curado onde founders não-técnicos e construtores técnicos se encontram com segurança para co-fundar startups no Brasil.",
+    "Clip conecta fundadores de startups e talentos técnicos (builders) para criarem juntos o próximo unicórnio através de curadoria e matchmaking inteligente.",
   keywords: [
     "co-founder",
     "startup",
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     "empreendedorismo",
   ],
   openGraph: {
-    title: "Foundo — Matchmaking curado para co-fundação",
+    title: "Clip — Matchmaking curado para co-fundação",
     description:
       "Encontre seu co-founder técnico ou comercial com segurança e intencionalidade.",
     type: "website",

@@ -7,6 +7,7 @@ import styles from "../page.module.css";
 import loginStyles from "./login.module.css";
 
 import { signInWithEmailPassword, signUpWithEmailPassword } from "@/lib/supabase/actions";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 function LoginContent() {
   const searchParams = useSearchParams();
@@ -65,14 +66,14 @@ function LoginContent() {
       <div className="container container-narrow">
         <div className={loginStyles.loginBox}>
           <div className={styles.logo} style={{ marginBottom: "var(--space-xl)", textAlign: "center" }}>
-            found<span className={styles.logoAccent}>o</span>
+            clip
           </div>
 
           <h1 className={styles.heroTitle} style={{ fontSize: "var(--font-size-2xl)", textAlign: "center" }}>
             {isSignUp ? "Criar sua conta" : "Bem-vindo de volta"}
           </h1>
           <p className={styles.heroSubtitle} style={{ textAlign: "center", marginBottom: "var(--space-xl)" }}>
-            {isSignUp ? "Escolha uma senha para começar sua jornada." : "Entre com seus dados para continuar no Foundo."}
+            {isSignUp ? "Escolha uma senha para começar sua jornada." : "Entre com seus dados para continuar no Clip."}
           </p>
 
           <form className={loginStyles.loginForm} onSubmit={handleSubmit}>
@@ -109,7 +110,7 @@ function LoginContent() {
               disabled={loading}
               id="login-submit"
             >
-              {loading ? (isSignUp ? "Criando..." : "Entrando...") : (isSignUp ? "Criar minha conta →" : "Entrar no Foundo →")}
+              {loading ? (isSignUp ? "Criando..." : "Entrando...") : (isSignUp ? <>Criar minha conta <ArrowRight size={18} /></> : <>Entrar no Clip <ArrowRight size={18} /></>)}
             </button>
           </form>
 
@@ -131,7 +132,7 @@ function LoginContent() {
 
           <div style={{ marginTop: "var(--space-xl)", textAlign: "center" }}>
             <Link href="/" className="btn btn-ghost btn-sm">
-              ← Voltar para a Home
+              <ArrowLeft size={16} /> Voltar para a Home
             </Link>
           </div>
         </div>

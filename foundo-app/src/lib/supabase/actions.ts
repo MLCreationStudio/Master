@@ -1,8 +1,10 @@
 "use server";
 
+import { redirect } from "next/navigation";
+
 import { createClient, createAdminClient } from "./server";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { sendAdmissionConfirmation, sendStatusUpdateEmail } from "../emails";
 import type { AdmissionFormData, UserStatus } from "../types";
 
 /**
@@ -63,6 +65,11 @@ export async function submitAdmission(formData: AdmissionFormData) {
     });
 
   if (seekingError) return { error: seekingError.message };
+
+  // 4. Send Confirmation Email (non-blocking)
+  if (user.email) {
+     sendAdmissionConfirmation(user.email, formData.name);
+  }
 
   revalidatePath("/admissao");
   revalidatePath("/admin");
@@ -128,6 +135,13 @@ export async function signUpWithEmailPassword(formData: FormData) {
 export async function updateUserStatus(userId: string, status: UserStatus) {
   const adminSupabase = createAdminClient();
   
+  // Get user details for the email notification
+  const { data: userProfile } = await adminSupabase
+    .from("users")
+    .select("email, name")
+    .eq("id", userId)
+    .single();
+
   const { error } = await adminSupabase
     .from("users")
     .update({ status })
@@ -136,6 +150,11 @@ export async function updateUserStatus(userId: string, status: UserStatus) {
   if (error) {
     console.error("Error updating user status:", error);
     throw error;
+  }
+
+  // Send notification (active/rejected users only)
+  if (userProfile && (status === "active" || status === "rejected")) {
+    sendStatusUpdateEmail(userProfile.email, userProfile.name, status as "active" | "rejected");
   }
 
   revalidatePath("/admin");

@@ -1,6 +1,6 @@
 /* ============================================================
-   Foundo — Database Types
-   Based on Foundo_PRD_v1.md Section 2.2
+   Clip — Database Types
+   Based on Clip_PRD_v1.md Section 2.2
    ============================================================ */
 
 export type UserRole = "founder" | "builder";
