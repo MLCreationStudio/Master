@@ -48,9 +48,14 @@ export default function LandingPage() {
           <div className={styles.logo}>
             found<span className={styles.logoAccent}>o</span>
           </div>
-          <Link href="/login" className="btn btn-secondary btn-sm">
-            Quero participar
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link href="/login" className="btn btn-ghost btn-sm">
+              Entrar
+            </Link>
+            <Link href="/login" className="btn btn-secondary btn-sm">
+              Quero participar
+            </Link>
+          </div>
         </nav>
 
         {/* Hero */}
@@ -91,6 +96,14 @@ export default function LandingPage() {
                   {loading ? "Enviando..." : "Entrar na lista"}
                 </button>
               </form>
+              <div style={{ marginTop: "var(--space-md)", textAlign: "center" }}>
+                 <p className="text-sm text-tertiary">
+                   Já tem conta?{" "}
+                   <Link href="/login" className="text-accent hover:underline">
+                     Entrar aqui
+                   </Link>
+                 </p>
+              </div>
               {error && (
                 <p className="input-error-msg" style={{ marginTop: "var(--space-sm)" }}>
                   {error}
