@@ -73,6 +73,11 @@ export async function middleware(request: NextRequest) {
     if (profile?.status === "active" && isAdmissionRoute) {
         return NextResponse.redirect(new URL("/deck", request.url));
     }
+
+    // Admin Protection
+    if (isAdminRoute && user.email !== "matheus@mlcreationstudio.com") {
+      return NextResponse.redirect(new URL("/deck", request.url));
+    }
   }
 
   return response;

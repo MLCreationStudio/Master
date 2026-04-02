@@ -1,7 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { getPendingApplications, updateUserStatus } from "@/lib/supabase/actions";
+import { useState, useEffect, useCallback } from "react";
+import { 
+  getPendingApplications, 
+  updateUserStatus,
+  getAdminMetrics,
+  getAdminMatches,
+  getAdminActivity
+} from "@/lib/supabase/actions";
 import styles from "./admin.module.css";
 import type { UserStatus } from "@/lib/types";
 
@@ -10,38 +16,55 @@ type Tab = "queue" | "matches" | "activity" | "metrics";
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<Tab>("queue");
   const [pendingApps, setPendingApps] = useState<any[]>([]); // eslint-disable-line @typescript-eslint/no-explicit-any
+  
+  // Phase 5 States
+  const [metrics, setMetrics] = useState({
+    activeUsers: 0, totalMatches: 0, conversationsStarted: 0, successStories: 0
+  });
+  const [matches, setMatches] = useState<any[]>([]);
+  const [activity, setActivity] = useState<any[]>([]);
+
   const [loading, setLoading] = useState(true);
 
-  const fetchApps = async () => {
+  const fetchDashboardData = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await getPendingApplications();
-      setPendingApps(data || []);
+      if (activeTab === "queue") {
+        const data = await getPendingApplications();
+        setPendingApps(data || []);
+      } else if (activeTab === "matches") {
+        const data = await getAdminMatches();
+        setMatches(data || []);
+      } else if (activeTab === "activity") {
+        const data = await getAdminActivity();
+        setActivity(data || []);
+      }
+      
+      // Always fetch metrics for the top header
+      const metricsData = await getAdminMetrics();
+      setMetrics(metricsData);
     } catch (err) {
-      console.error("Error fetching pending apps:", err);
+      console.error("Error fetching admin data:", err);
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeTab]);
 
   useEffect(() => {
-    if (activeTab === "queue") {
-      fetchApps();
-    }
-  }, [activeTab]);
+    fetchDashboardData();
+  }, [fetchDashboardData]);
 
   const handleStatusUpdate = async (userId: string, status: UserStatus) => {
     try {
       await updateUserStatus(userId, status);
-      // Remove from local state
       setPendingApps((prev) => prev.filter((p) => p.id !== userId));
+      // Refresh metrics after approval
+      fetchDashboardData();
     } catch (err) {
       console.error("Error updating status:", err);
       alert("Erro ao atualizar status.");
     }
   };
-
-
 
   return (
     <div className={styles.adminPage}>
@@ -50,20 +73,20 @@ export default function AdminPage() {
       {/* Metrics */}
       <div className={styles.metricsGrid}>
         <div className={styles.metricCard}>
-          <div className={styles.metricValue}>--</div>
-          <div className={styles.metricLabel}>Usuários aprovados</div>
+          <div className={styles.metricValue}>{metrics.activeUsers}</div>
+          <div className={styles.metricLabel}>Usuários ativos</div>
         </div>
         <div className={styles.metricCard}>
-          <div className={styles.metricValue}>--</div>
+          <div className={styles.metricValue}>{metrics.totalMatches}</div>
           <div className={styles.metricLabel}>Matches realizados</div>
         </div>
         <div className={styles.metricCard}>
-          <div className={styles.metricValue}>--</div>
-          <div className={styles.metricLabel}>Conversas iniciadas</div>
+          <div className={styles.metricValue}>{metrics.conversationsStarted}</div>
+          <div className={styles.metricLabel}>Conversas ativas</div>
         </div>
         <div className={styles.metricCard}>
-          <div className={styles.metricValue}>--</div>
-          <div className={styles.metricLabel}>Histórias de sucesso</div>
+          <div className={styles.metricValue}>{metrics.successStories}</div>
+          <div className={styles.metricLabel}>Projetos c/ Tração</div>
         </div>
       </div>
 
@@ -73,7 +96,6 @@ export default function AdminPage() {
           ["queue", `Fila de Admissão (${pendingApps.length})`],
           ["matches", "Mapa de Matches"],
           ["activity", "Radar de Atividade"],
-          ["metrics", "Métricas"],
         ] as [Tab, string][]).map(([tab, label]) => (
           <button
             key={tab}
@@ -152,26 +174,61 @@ export default function AdminPage() {
 
       {/* Matches Tab */}
       {activeTab === "matches" && (
-        <div className={styles.matchMap}>
-            <p style={{ textAlign: "center", padding: "40px", color: "var(--text-tertiary)" }}>
-                Mapa de matches em tempo real será implementado na Fase 5.
-            </p>
+        <div className={styles.queueList}>
+          {loading ? (
+             <p style={{ textAlign: "center", padding: "40px", color: "var(--text-tertiary)" }}>Carregando matches...</p>
+          ) : matches.length === 0 ? (
+             <p style={{ textAlign: "center", padding: "40px", color: "var(--text-tertiary)" }}>Nenhum match realizado ainda.</p>
+          ) : (
+            matches.map((match) => (
+              <div key={match.id} className={styles.queueItem} style={{ alignItems: "center" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                  <div className={styles.queueAvatar} style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}>
+                    {match.user_a.role === 'founder' ? '🚀' : '⚡'}
+                  </div>
+                  <div>
+                    <div className={styles.queueName}>{match.user_a.name}</div>
+                    <div className="text-tertiary" style={{ fontSize: "12px" }}>{match.user_a.role}</div>
+                  </div>
+                </div>
+
+                <div style={{ color: "var(--accent-primary)", fontWeight: "bold" }}>MATCH 🔥</div>
+
+                <div style={{ display: "flex", alignItems: "center", gap: "12px", textAlign: "right" }}>
+                  <div>
+                    <div className={styles.queueName}>{match.user_b.name}</div>
+                    <div className="text-tertiary" style={{ fontSize: "12px" }}>{match.user_b.role}</div>
+                  </div>
+                  <div className={styles.queueAvatar} style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}>
+                    {match.user_b.role === 'founder' ? '🚀' : '⚡'}
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       )}
 
       {/* Activity Tab */}
       {activeTab === "activity" && (
         <div className={styles.queueList}>
-          <p style={{ textAlign: "center", padding: "40px", color: "var(--text-tertiary)" }}>
-            Radar de atividade em tempo real será implementado na Fase 5.
-          </p>
-        </div>
-      )}
-
-      {/* Metrics Tab */}
-      {activeTab === "metrics" && (
-        <div style={{ padding: "32px", textAlign: "center", color: "var(--text-tertiary)" }}>
-          <p>📊 Dashboard de métricas core em construção.</p>
+          {loading ? (
+             <p style={{ textAlign: "center", padding: "40px", color: "var(--text-tertiary)" }}>Carregando radar...</p>
+          ) : activity.length === 0 ? (
+             <p style={{ textAlign: "center", padding: "40px", color: "var(--text-tertiary)" }}>Sem atividades recentes.</p>
+          ) : (
+            activity.map((event) => (
+              <div key={event.id} className={styles.queueItem}>
+                <div style={{ fontSize: "14px", color: "var(--text-secondary)" }}>
+                  <span style={{ color: "var(--accent-primary)", marginRight: "8px" }}>●</span>
+                  {event.text}
+                </div>
+                <div style={{ fontSize: "12px", color: "var(--text-tertiary)" }}>
+                  {new Date(event.time).toLocaleString()}
+                </div>
+              </div>
+            ))
+          )}
         </div>
       )}
     </div>

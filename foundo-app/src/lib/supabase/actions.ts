@@ -282,3 +282,87 @@ export async function sendMessage(conversationId: string, content: string) {
   revalidatePath("/chat");
   return data;
 }
+
+/**
+ * ── Admin & Governance Actions ───────────────────────────────────
+ */
+
+export async function getAdminMetrics() {
+  const adminSupabase = createAdminClient();
+
+  // 1. Total Active Users
+  const { count: activeUsers } = await adminSupabase
+    .from("users")
+    .select("*", { count: "exact", head: true })
+    .eq("status", "active");
+
+  // 2. Total Matches
+  const { count: totalMatches } = await adminSupabase
+    .from("matches")
+    .select("*", { count: "exact", head: true });
+
+  // 3. Conversations Started (have at least one non-system message)
+  // Simplified for MVP: total conversations (any match generates one)
+  const { count: totalConversations } = await adminSupabase
+    .from("conversations")
+    .select("*", { count: "exact", head: true });
+
+  // 4. Success Stories (Mock or simplified for MVP based on project status "traction" or "expansion")
+  const { count: tractionProjects } = await adminSupabase
+    .from("projects")
+    .select("*", { count: "exact", head: true })
+    .in("stage", ["traction", "expansion"]);
+
+  return {
+    activeUsers: activeUsers || 0,
+    totalMatches: totalMatches || 0,
+    conversationsStarted: totalConversations || 0,
+    successStories: tractionProjects || 0,
+  };
+}
+
+export async function getAdminMatches() {
+  const adminSupabase = createAdminClient();
+
+  const { data, error } = await adminSupabase
+    .from("matches")
+    .select(`
+      id,
+      matched_at,
+      user_a:users!matches_user_a_id_fkey(id, name, role),
+      user_b:users!matches_user_b_id_fkey(id, name, role),
+      conversations (status)
+    `)
+    .order("matched_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching admin matches", error);
+    return [];
+  }
+
+  return data;
+}
+
+export async function getAdminActivity() {
+  const adminSupabase = createAdminClient();
+
+  // Activity Feed MVP: getting latest active users and formatting as events
+  const { data: latestUsers, error } = await adminSupabase
+    .from("users")
+    .select("name, role, status_updated_at")
+    .eq("status", "active")
+    .order("status_updated_at", { ascending: false })
+    .limit(10);
+
+  if (error) {
+    console.error("Error fetching admin activity", error);
+    return [];
+  }
+
+  // Format as events
+  return (latestUsers || []).map((u) => ({
+    id: `u-${u.status_updated_at}`,
+    text: `Novo ${u.role === 'founder' ? 'Founder' : 'Builder'} ativo: ${u.name}`,
+    time: u.status_updated_at || new Date().toISOString(),
+  }));
+}
