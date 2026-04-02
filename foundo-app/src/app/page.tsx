@@ -242,13 +242,19 @@ export default function LandingPage() {
 
         {/* Footer */}
         <footer className={styles.footer}>
-          <p className={styles.footerText}>
-            © 2026 Foundo · ML Creation Studio
-          </p>
-          <div className={styles.footerLinks}>
-            <Link href="#">Termos</Link>
-            <Link href="#">Privacidade</Link>
-            <Link href="#">Contato</Link>
+          <div className="flex flex-col md:flex-row justify-between items-center w-full gap-4">
+            <p className={styles.footerText}>
+              © 2026 Foundo · ML Creation Studio
+            </p>
+            <div className={styles.footerLinks}>
+              <Link href="#">Termos</Link>
+              <Link href="#">Privacidade</Link>
+              <Link href="#">Contato</Link>
+              {/* Secret Admin Link */}
+              <Link href="/admin" className="opacity-50 hover:opacity-100 transition-opacity">
+                Admin ⚙️
+              </Link>
+            </div>
           </div>
         </footer>
       </div>
