@@ -162,7 +162,7 @@ export async function updateUserStatus(userId: string, status: UserStatus) {
 }
 
 /**
- * Get current user profile status and role
+ * Get current user full profile (Including projects and seeking specs)
  */
 export async function getUserProfile() {
   const supabase = await createClient();
@@ -171,7 +171,11 @@ export async function getUserProfile() {
 
   const { data, error } = await supabase
     .from("users")
-    .select("status, role")
+    .select(`
+      *,
+      projects (*),
+      seeking (*)
+    `)
     .eq("id", user.id)
     .maybeSingle();
 

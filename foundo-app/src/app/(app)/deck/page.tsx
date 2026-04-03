@@ -156,6 +156,41 @@ export default function DeckPage() {
     })
   };
 
+  const generateIcebreakers = async () => {
+    const btn = document.getElementById("ai-icebreaker-btn") as HTMLButtonElement;
+    const box = document.getElementById("ai-icebreaker-box");
+    if (!profile || !btn) return;
+    
+    btn.disabled = true;
+    btn.innerHTML = "Gerando sinapses...";
+    box!.style.display = "flex";
+    box!.innerHTML = "<div style='font-size:12px; color:var(--text-tertiary); text-align:center;'>Analisando cruzamento de dados...</div>";
+
+    try {
+      const res = await fetch("/api/ai/icebreaker", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          currentUser: { name: "Você", role: "founder", skills: "Gestão" },
+          matchUser: { name: profile.name, role: profile.role, project: profile.project_name || profile.problem_statement, seeking: profile.contribution_summary }
+        })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      
+      const suggestionsHtml = data.icebreakers.map((msg: string) => 
+        `<div style="background:var(--bg-tertiary); padding:10px; border-radius:6px; border:1px solid var(--border-subtle); margin-bottom:8px; font-size:13px; color:var(--text-primary); text-align:left; cursor:pointer;" onclick="navigator.clipboard.writeText(this.innerText); this.style.borderColor='var(--accent-primary)';"><div style="font-size:10px; color:var(--accent-primary); margin-bottom:4px; font-weight:bold;">Tática ${data.icebreakers.indexOf(msg) + 1} (Clique para copiar)</div>${msg}</div>`
+      ).join("");
+      
+      box!.innerHTML = `<div style="display:flex; flex-direction:column; gap:8px;">${suggestionsHtml}</div>`;
+      btn.style.display = "none";
+    } catch (err: any) {
+      box!.innerHTML = `<span style="color:red; font-size:12px;">Erro: Coloque a OPENAI_API_KEY no servidor local para gerar match inteligência. (${err.message})</span>`;
+      btn.disabled = false;
+      btn.innerHTML = "Tentar Inteligência Novamente";
+    }
+  };
+
   return (
     <div className={styles.deckPage}>
       <div className={styles.deckHeader}>
@@ -269,6 +304,7 @@ export default function DeckPage() {
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
               className={`${styles.matchModal} glass`}
+              style={{ maxHeight: "90vh", overflowY: "auto", width: "90%", maxWidth: "450px" }}
             >
               <motion.div 
                 animate={{ rotate: [0, -10, 10, -5, 5, 0] }} 
@@ -281,6 +317,22 @@ export default function DeckPage() {
               <p className={styles.matchDesc}>
                 O sinal foi correspondido. <strong>{profile?.name}</strong> também tem interesse em conectar. O radar abriu um canal seguro.
               </p>
+              
+              {/* IA ICEBREAKER ENGINE */}
+              <div style={{ marginTop: "16px", marginBottom: "20px", display: "flex", flexDirection: "column", gap: "8px" }}>
+                 <button 
+                   id="ai-icebreaker-btn"
+                   className="btn glass w-full"
+                   style={{ border: "1px solid var(--accent-primary)", color: "var(--accent-primary)" }}
+                   onClick={generateIcebreakers}
+                 >
+                   ✨ Gerar Quebra-Gelos (Otimizados por IA)
+                 </button>
+                 <div id="ai-icebreaker-box" style={{ display: "none", flexDirection: "column" }}>
+                    {/* Rendered HTML will go here via DOM manipulation in generateIcebreakers */}
+                 </div>
+              </div>
+
               <div className={styles.matchActions}>
                 <Link href={`/chat?id=${matchData.conversation_id}`} className="btn btn-primary w-full">
                   Abrir Canal <ArrowRight size={18} />

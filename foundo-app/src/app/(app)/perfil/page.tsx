@@ -4,18 +4,15 @@ import { motion } from "framer-motion";
 import styles from "./perfil.module.css";
 import { 
   User, 
-  Building, 
-  BarChart3, 
+  Briefcase, 
   Search, 
-  DollarSign, 
-  Hammer, 
-  Edit3, 
   Check, 
   Eye, 
   Users,
-  Clock,
-  Briefcase
+  Clock
 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { getUserProfile } from "@/lib/supabase/actions";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -35,6 +32,37 @@ const itemVariants = {
 };
 
 export default function PerfilPage() {
+  const [profile, setProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+      const data = await getUserProfile();
+      setProfile(data);
+      setLoading(false);
+    }
+    loadData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className={styles.profilePage} style={{ textAlign: "center", padding: "100px" }}>
+        <p className="text-tertiary">Decodificando Passport...</p>
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <div className={styles.profilePage}>
+        <p>Perfil não localizado na rede.</p>
+      </div>
+    );
+  }
+
+  const project = profile.projects?.[0];
+  const seeking = profile.seeking?.[0];
+
   return (
     <div className={styles.profilePage}>
       <motion.div 
@@ -46,9 +74,6 @@ export default function PerfilPage() {
           <h1 className={styles.title}>Passport</h1>
           <p className={styles.subtitle}>Sua credencial de autoridade no ecossistema Clip.</p>
         </div>
-        <button className="btn btn-secondary btn-sm hide-mobile">
-          <Edit3 size={16} /> Editar Informações
-        </button>
       </motion.div>
 
       <motion.div 
@@ -66,29 +91,27 @@ export default function PerfilPage() {
 
           <div className={styles.identityGrid}>
             <div className={styles.identityRow}>
-              <span className={styles.identityLabel}>Fundador</span>
-              <span className={styles.identityValue} style={{ fontSize: "var(--font-size-xl)", fontWeight: 700 }}>João Silva</span>
+              <span className={styles.identityLabel}>Membro</span>
+              <span className={styles.identityValue} style={{ fontSize: "var(--font-size-xl)", fontWeight: 700 }}>{profile.name}</span>
             </div>
 
             <div className={styles.identityRow}>
               <span className={styles.identityLabel}>Base Operacional</span>
-              <span className={styles.identityValue}>São Paulo, SP</span>
+              <span className={styles.identityValue}>{profile.city}</span>
             </div>
 
             <div className={styles.identityRow}>
               <span className={styles.identityLabel}>Papel Primário</span>
-              <div><span className="tag tag-role-builder">Builder</span></div>
+              <div><span className={`tag ${profile.role === 'founder' ? 'tag-role-founder' : 'tag-role-builder'}`}>
+                {profile.role === 'founder' ? 'Founder' : 'Builder'}
+              </span></div>
             </div>
 
             <div className={styles.identityRow}>
-              <span className={styles.identityLabel}>O que você oferece</span>
+              <span className={styles.identityLabel}>Oferta (O que você traz)</span>
               <span className={styles.identityValue}>
-                Desenvolvimento Full-Stack, Arquitetura Cloud (ex-AWS). Capacidade de construir MVPs escaláveis.
+                {seeking?.contribution_summary || "Habilidades em fase de preenchimento."}
               </span>
-            </div>
-            
-            <div className={styles.editAction}>
-              <button className="btn btn-ghost w-full">Configurações de Identidade</button>
             </div>
           </div>
         </motion.div>
@@ -105,33 +128,79 @@ export default function PerfilPage() {
             <div className={styles.identityGrid}>
               <div className={styles.identityRow}>
                 <span className={styles.identityLabel}>Projeto Atual</span>
-                <span className={styles.identityValue}><strong>DataPipe</strong> — Backup automatizado para PMEs</span>
+                <span className={styles.identityValue}>
+                  {project ? (
+                    <><strong>{project.name}</strong> — {project.problem_statement}</>
+                  ) : (
+                    "Sem projeto matriz registrado (Fase de sondagem)."
+                  )}
+                </span>
               </div>
 
               <div className={styles.identityRow}>
                 <span className={styles.identityLabel}>Radar de Prontidão</span>
                 <div style={{ display: "flex", gap: "8px" }}>
-                  <span className="tag tag-stage-exploration">Exploração</span>
-                  <span className="tag tag-accent">Busca: Vendas, Operações</span>
+                  <span className="tag tag-stage-exploration">{project?.stage || "Exploração"}</span>
+                  {seeking?.expertise_areas && seeking.expertise_areas.length > 0 && (
+                     <span className="tag tag-accent">Áreas: {seeking.expertise_areas.join(', ')}</span>
+                  )}
                 </div>
               </div>
 
-              <div className={styles.identityRow}>
-                <span className={styles.identityLabel}>Radar / Status de Busca</span>
-                <div className={styles.statusContainer}>
-                  <button className={`${styles.statusBtn} ${styles.active}`}>
-                    <Check size={16} /> Ativo
+              {/* AI REFINER MODULE */}
+              <div className="p-4 mt-2 rounded-lg border border-accent/20" style={{ background: "var(--bg-tertiary)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                   <span className={styles.identityLabel} style={{ color: "var(--accent-primary)", display: "flex", alignItems: "center", gap: "4px" }}>
+                     ✨ Clip AI: Otimizador de Pitch
+                   </span>
+                </div>
+                <div style={{ fontSize: "12px", color: "var(--text-secondary)", marginBottom: "12px", lineHeight: 1.4 }}>
+                  Testando: Descreva seu projeto cru e veja a OpenAI reescrevê-lo com linguagem de alta conversão.
+                </div>
+                <div style={{ display: "flex", gap: "8px", flexDirection: "column" }}>
+                  <textarea 
+                    className="input glass w-full" 
+                    placeholder="Cole seu briefing amador aqui..."
+                    style={{ minHeight: "80px", resize: "none" }}
+                    id="ai-pitch-input"
+                    defaultValue={project?.problem_statement || ""}
+                  ></textarea>
+                  <button 
+                    className="btn btn-primary btn-sm w-full"
+                    onClick={async () => {
+                      const input = document.getElementById("ai-pitch-input") as HTMLTextAreaElement;
+                      const output = document.getElementById("ai-pitch-output");
+                      if(!input.value) return;
+                      
+                      input.disabled = true;
+                      output!.innerText = "Gerando sinapses via OpenAI...";
+                      
+                      try {
+                        const res = await fetch("/api/ai/pitch-refiner", {
+                           method: "POST",
+                           headers: { "Content-Type": "application/json" },
+                           body: JSON.stringify({ rawPitch: input.value, role: profile.role, projectStage: project?.stage || "exploração" })
+                        });
+                        const data = await res.json();
+                        if (data.error) throw new Error(data.error);
+                        output!.innerText = data.refinedPitch;
+                      } catch (err: any) {
+                        output!.innerText = `Erro API: ${err.message}`;
+                      } finally {
+                        input.disabled = false;
+                      }
+                    }}
+                  >
+                    🚀 Refinar como Elite (AI)
                   </button>
-                  <button className={styles.statusBtn}>
-                    <Eye size={16} /> Passivo
-                  </button>
-                  <button className={styles.statusBtn}>
-                    <Users size={16} /> Fechado
-                  </button>
+                  <div id="ai-pitch-output" style={{ marginTop: "12px", fontSize: "14px", color: "var(--text-primary)", padding: "12px", borderLeft: "2px solid var(--accent-primary)", background: "var(--bg-card)" }}>
+                    <em>Resultado da Inteligência aparecerá aqui...</em>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+
 
           <div className={`${styles.moduleCard} glass-card`}>
             <div className={styles.moduleHeader}>
