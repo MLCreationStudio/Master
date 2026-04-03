@@ -2,13 +2,17 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { 
   LayoutDashboard, 
   Flame, 
   MessageSquare, 
   User,
-  LogOut
+  LogOut,
+  Zap
 } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 import styles from "./layout.module.css";
 
 const NAV_ITEMS = [
@@ -20,38 +24,71 @@ const NAV_ITEMS = [
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [userProfile, setUserProfile] = useState<{ full_name: string; role: string } | null>(null);
+  const supabase = createClient();
+
+  useEffect(() => {
+    async function loadProfile() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from("users")
+          .select("full_name, role")
+          .eq("id", user.id)
+          .single();
+        
+        if (profile) setUserProfile(profile);
+      }
+    }
+    loadProfile();
+  }, [supabase]);
 
   return (
     <div className={styles.appLayout}>
       <aside className={styles.sidebar}>
         <Link href="/deck" className={styles.sidebarLogo}>
+          <Zap size={24} className={styles.sidebarLogoAccent} fill="var(--accent-primary)" />
           clip
         </Link>
 
-        <ul className={styles.navList}>
-          {NAV_ITEMS.map((item) => (
-            <li key={item.href}>
-              <Link
-                href={item.href}
-                className={`${styles.navItem} ${
-                  pathname === item.href ? styles.active : ""
-                }`}
-              >
-                <span className={styles.navIcon}>{item.icon}</span>
-                {item.label}
-                {item.badge !== undefined && item.badge > 0 && (
-                  <span className={styles.navBadge}>{item.badge}</span>
+        <nav className={styles.navList}>
+          {NAV_ITEMS.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <div key={item.href} className={styles.navItemContainer}>
+                {isActive && (
+                  <motion.div
+                    layoutId="activeTab"
+                    className={styles.activeIndicator}
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
                 )}
-              </Link>
-            </li>
-          ))}
-        </ul>
+                <Link
+                  href={item.href}
+                  className={`${styles.navItem} ${isActive ? styles.active : ""}`}
+                >
+                  <span className={styles.navIcon}>{item.icon}</span>
+                  {item.label}
+                  {item.badge !== undefined && item.badge > 0 && (
+                    <span className={styles.navBadge}>{item.badge}</span>
+                  )}
+                </Link>
+              </div>
+            );
+          })}
+        </nav>
 
         <div className={styles.sidebarFooter}>
-          <div className={styles.userAvatar}><User size={20} /></div>
-          <div>
-            <div className={styles.userName}>Usuário</div>
-            <div className={styles.userRole}>Founder</div>
+          <div className={styles.userAvatar}>
+            <User size={20} />
+          </div>
+          <div className={styles.userInfo}>
+            <div className={styles.userName}>
+              {userProfile?.full_name || "Carregando..."}
+            </div>
+            <div className={styles.userRole}>
+              {userProfile?.role || "Founder"}
+            </div>
           </div>
         </div>
       </aside>

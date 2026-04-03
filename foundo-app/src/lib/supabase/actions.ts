@@ -92,7 +92,7 @@ export async function signInWithEmailPassword(formData: FormData) {
   if (error) return { error: error.message };
 
   revalidatePath("/", "layout");
-  redirect("/admissao");
+  return { success: true, redirectTo: "/admissao" };
 }
 
 /**
@@ -126,7 +126,7 @@ export async function signUpWithEmailPassword(formData: FormData) {
   if (error) return { error: error.message };
 
   revalidatePath("/", "layout");
-  redirect("/admissao");
+  return { success: true, redirectTo: "/admissao" };
 }
 
 /**

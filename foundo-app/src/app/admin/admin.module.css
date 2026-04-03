@@ -16,59 +16,88 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: var(--space-md);
-  margin-bottom: var(--space-2xl);
+  margin-bottom: var(--space-3xl);
 }
 
 .metricCard {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: var(--space-lg);
-  transition: all var(--transition-fast);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
 }
+
+.metricCard::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: var(--radius-xl);
+  padding: 1px;
+  background: var(--border-reflective);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+  pointer-events: none;
+}
+
 .metricCard:hover {
+  transform: translateY(-2px);
   border-color: var(--border-hover);
+  background: var(--bg-card-hover);
+  box-shadow: var(--shadow-md), 0 0 20px rgba(99, 102, 241, 0.1);
 }
 
 .metricValue {
-  font-size: var(--font-size-3xl);
+  font-size: var(--font-size-4xl);
   font-weight: 800;
-  color: var(--accent-primary);
-  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  letter-spacing: -0.04em;
+  margin-bottom: var(--space-xs);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
 }
 
 .metricLabel {
   font-size: var(--font-size-sm);
-  color: var(--text-secondary);
-  margin-top: var(--space-xs);
+  color: var(--text-tertiary);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
 }
 
 /* ── Tabs ─────────────────────────────────────────────────── */
 .tabs {
   display: flex;
-  gap: var(--space-xs);
+  gap: var(--space-md);
   border-bottom: 1px solid var(--border-subtle);
   margin-bottom: var(--space-xl);
+  position: relative;
 }
 
 .tab {
-  padding: var(--space-sm) var(--space-md);
+  padding: var(--space-sm) 0;
   font-size: var(--font-size-sm);
   font-weight: 600;
   color: var(--text-tertiary);
   background: none;
   border: none;
   cursor: pointer;
-  border-bottom: 2px solid transparent;
   transition: all var(--transition-fast);
-  margin-bottom: -1px;
+  position: relative;
 }
+
 .tab:hover {
   color: var(--text-primary);
 }
+
 .tab.active {
-  color: var(--accent-primary);
-  border-bottom-color: var(--accent-primary);
+  color: var(--text-primary);
 }
 
 /* ── Queue ────────────────────────────────────────────────── */
@@ -86,10 +115,12 @@
   display: flex;
   align-items: flex-start;
   gap: var(--space-lg);
-  transition: all var(--transition-fast);
+  transition: all var(--transition-base);
 }
 .queueItem:hover {
   border-color: var(--border-hover);
+  box-shadow: var(--shadow-md);
+  background: var(--bg-card-hover);
 }
 
 .queueAvatar {
@@ -102,6 +133,8 @@
   justify-content: center;
   font-size: 22px;
   flex-shrink: 0;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
 }
 
 .queueInfo {
@@ -109,9 +142,11 @@
 }
 
 .queueName {
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-lg);
   font-weight: 700;
-  margin-bottom: var(--space-xs);
+  color: var(--text-primary);
+  margin-bottom: 2px;
+  letter-spacing: -0.01em;
 }
 
 .queueMeta {
@@ -119,13 +154,18 @@
   color: var(--text-tertiary);
   display: flex;
   gap: var(--space-sm);
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--space-md);
+  align-items: center;
 }
 
 .queueProject {
   font-size: var(--font-size-sm);
-  color: var(--text-secondary);
-  line-height: 1.5;
+  color: var(--text-primary);
+  line-height: 1.6;
+  background: var(--bg-tertiary);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
 }
 
 .queueActions {
@@ -135,29 +175,38 @@
 }
 
 .queueBtn {
-  padding: 8px 16px;
+  padding: 10px 16px;
   border: none;
   border-radius: var(--radius-md);
-  font-size: var(--font-size-xs);
-  font-weight: 700;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all var(--transition-base);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
 }
 
 .approveBtn {
-  background: rgba(52, 211, 153, 0.15);
+  background: rgba(16, 185, 129, 0.1);
   color: var(--status-success);
+  border: 1px solid transparent;
 }
 .approveBtn:hover {
-  background: rgba(52, 211, 153, 0.25);
+  background: rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.4);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.15);
 }
 
 .rejectBtn {
-  background: rgba(248, 113, 113, 0.15);
-  color: var(--status-error);
+  background: transparent;
+  color: var(--text-tertiary);
+  border: 1px solid var(--border-subtle);
 }
 .rejectBtn:hover {
-  background: rgba(248, 113, 113, 0.25);
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--status-error);
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 .infoBtn {

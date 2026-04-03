@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import styles from "../page.module.css";
 import loginStyles from "./login.module.css";
@@ -10,6 +10,7 @@ import { signInWithEmailPassword, signUpWithEmailPassword } from "@/lib/supabase
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
 function LoginContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const [mounted, setMounted] = useState(false);
   const [email, setEmail] = useState("");
@@ -41,13 +42,19 @@ function LoginContent() {
 
       if (result?.error) {
         setMessage({ type: "error", text: result.error });
-      } else if (isSignUp) {
-        setMessage({ type: "success", text: "Conta em validação! Verifique seu e-mail se necessário ou tente entrar após alguns minutos." });
+      } else if (result?.redirectTo) {
+        // Handle successful auth & redirect
+        if (isSignUp) {
+          setMessage({ type: "success", text: "Conta validada com sucesso! Redirecionando..." });
+        }
+        router.push(result.redirectTo);
       }
-      // If sign in is successful with no error, redirect will be handled by revalidatePath / middleware
     } catch (err: unknown) {
       const error = err as Error;
-      setMessage({ type: "error", text: error.message || "Erro na autenticação" });
+      // Filter out Next.js internal redirect errors just in case
+      if (error.message !== "NEXT_REDIRECT") {
+        setMessage({ type: "error", text: error.message || "Erro na autenticação" });
+      }
     } finally {
       setLoading(false);
     }
