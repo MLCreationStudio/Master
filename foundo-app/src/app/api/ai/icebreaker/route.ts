@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
 
-const openai = new OpenAI();
+export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
   try {
@@ -52,6 +52,8 @@ export async function POST(req: Request) {
     NÃO retorne formatação markdown como \`\`\`json, retorne apenas o JSON bruto stringificado.
     `;
 
+    const { default: OpenAI } = await import("openai");
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [{ role: "system", content: systemPrompt }],

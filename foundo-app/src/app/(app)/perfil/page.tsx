@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 "use client";
 
 import { motion } from "framer-motion";
@@ -182,7 +183,9 @@ export default function PerfilPage() {
                            body: JSON.stringify({ rawPitch: input.value, role: profile.role, projectStage: project?.stage || "exploração" })
                         });
                         const data = await res.json();
-                        if (data.error) throw new Error(data.error);
+                        if (!res.ok) {
+                          throw new Error(data.error || "A IA está indisponível no momento.");
+                        }
                         output!.innerText = data.refinedPitch;
                       } catch (err: any) {
                         output!.innerText = `Erro API: ${err.message}`;

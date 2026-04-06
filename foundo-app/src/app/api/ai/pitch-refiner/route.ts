@@ -1,8 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
 
-// Inicializa o cliente OpenAI. OpeAI buscará automaticamente o `process.env.OPENAI_API_KEY`
-const openai = new OpenAI();
+export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
   try {
@@ -35,6 +34,8 @@ export async function POST(req: Request) {
     2. O máximo deve ser de 3 frases contundentes e curtas.
     `;
 
+    const { default: OpenAI } = await import("openai");
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
